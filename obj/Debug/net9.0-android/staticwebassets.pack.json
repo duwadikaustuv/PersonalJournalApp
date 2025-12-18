@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\obj\\Debug\\net9.0-android\\scopedcss\\bundle\\PersonalJournalApp.styles.css",
+      "PackagePath": "staticwebassets\\PersonalJournalApp.styles.css"
+    },
+    {
+      "Id": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\wwwroot\\css\\app.css",
+      "PackagePath": "staticwebassets\\css\\app.css"
+    },
+    {
+      "Id": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-android\\staticwebassets\\msbuild.PersonalJournalApp.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-android\\staticwebassets\\msbuild.PersonalJournalApp.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-android\\staticwebassets\\msbuild.build.PersonalJournalApp.props",
+      "PackagePath": "build\\PersonalJournalApp.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-android\\staticwebassets\\msbuild.buildMultiTargeting.PersonalJournalApp.props",
+      "PackagePath": "buildMultiTargeting\\PersonalJournalApp.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-android\\staticwebassets\\msbuild.buildTransitive.PersonalJournalApp.props",
+      "PackagePath": "buildTransitive\\PersonalJournalApp.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

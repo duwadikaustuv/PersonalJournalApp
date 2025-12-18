@@ -1,0 +1,8 @@
+wwwroot\css\app.css
+wwwroot\css\bootstrap\bootstrap.min.css
+wwwroot\css\bootstrap\bootstrap.min.css.map
+wwwroot\index.html
+C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\app.css
+C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\bootstrap\bootstrap.min.css
+C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\bootstrap\bootstrap.min.css.map
+C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\index.html
