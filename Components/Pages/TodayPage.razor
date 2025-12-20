@@ -1,0 +1,309 @@
+﻿@page "/"
+@page "/today"
+
+<div class="page-content">
+    <div class="page-header">
+        <div>
+            <h1>Today's Entry</h1>
+            <p class="page-subtitle">Saturday, December 21, 2025</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary">
+                <span>🔒</span>
+                Lock
+            </button>
+            <button class="btn btn-primary">
+                <span>💾</span>
+                Save Entry
+            </button>
+        </div>
+    </div>
+
+    <div class="editor-layout">
+        <!-- Left: Meta Panel -->
+        <aside class="meta-panel">
+            <div class="card">
+                <h3>Streak 🔥</h3>
+                <div class="streak-display">
+                    <div class="streak-number">7</div>
+                    <div class="streak-label">Days</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>How are you feeling?</h3>
+                <div class="mood-selector">
+                    <button class="mood-btn active">
+                        <span class="mood-emoji">😊</span>
+                        <span class="mood-name">Happy</span>
+                    </button>
+                    <button class="mood-btn">
+                        <span class="mood-emoji">😌</span>
+                        <span class="mood-name">Calm</span>
+                    </button>
+                    <button class="mood-btn">
+                        <span class="mood-emoji">😢</span>
+                        <span class="mood-name">Sad</span>
+                    </button>
+                    <button class="mood-btn">
+                        <span class="mood-emoji">😰</span>
+                        <span class="mood-name">Anxious</span>
+                    </button>
+                    <button class="mood-btn">
+                        <span class="mood-emoji">🤩</span>
+                        <span class="mood-name">Excited</span>
+                    </button>
+                    <button class="mood-btn">
+                        <span class="mood-emoji">😴</span>
+                        <span class="mood-name">Tired</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Tags</h3>
+                <div class="tags-list">
+                    <span class="chip chip-primary">Work</span>
+                    <span class="chip chip-success">Health</span>
+                    <span class="chip chip-warning">Personal</span>
+                    <button class="add-tag-btn">+ Add Tag</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Category</h3>
+                <select class="input">
+                    <option>Personal</option>
+                    <option>Work</option>
+                    <option>Travel</option>
+                    <option>Goals</option>
+                </select>
+            </div>
+        </aside>
+
+        <!-- Right: Editor -->
+        <div class="editor-panel">
+            <div class="card editor-card">
+                <input type="text" class="title-input" placeholder="Entry title (optional)" />
+                
+                <div class="editor-toolbar">
+                    <button class="toolbar-btn" title="Bold">𝐁</button>
+                    <button class="toolbar-btn" title="Italic">𝐼</button>
+                    <button class="toolbar-btn" title="Heading">H</button>
+                    <button class="toolbar-btn" title="List">≡</button>
+                    <button class="toolbar-btn" title="Quote">❝</button>
+                </div>
+
+                <textarea class="content-editor" placeholder="Start writing your thoughts...">Today was a productive day! I managed to complete most of my tasks and even had time for a walk in the park. 
+
+Feeling grateful for:
+- Good health
+- Supportive friends
+- Progress on my goals
+
+Looking forward to tomorrow and new opportunities.</textarea>
+
+                <div class="editor-footer">
+                    <span class="word-count">87 words • 456 characters</span>
+                    <span class="save-status">✓ Saved at 10:42 PM</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-xl);
+}
+
+.page-subtitle {
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
+}
+
+.header-actions {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.editor-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: var(--space-xl);
+}
+
+.meta-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.streak-display {
+    text-align: center;
+    padding: var(--space-lg) 0;
+}
+
+.streak-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.streak-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mood-selector {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+}
+
+.mood-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-secondary);
+    transition: all 0.2s;
+}
+
+.mood-btn:hover {
+    border-color: var(--primary);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+}
+
+.mood-btn.active {
+    border-color: var(--primary);
+    background: #e0e7ff;
+}
+
+.mood-emoji {
+    font-size: 2rem;
+    margin-bottom: var(--space-xs);
+}
+
+.mood-name {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.add-tag-btn {
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px dashed var(--border-color);
+    transition: all 0.2s;
+}
+
+.add-tag-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: #e0e7ff;
+}
+
+.editor-panel {
+    min-height: 600px;
+}
+
+.editor-card {
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.title-input {
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: var(--space-md) 0;
+    margin-bottom: var(--space-md);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.title-input:focus {
+    outline: none;
+    border-bottom-color: var(--primary);
+}
+
+.editor-toolbar {
+    display: flex;
+    gap: var(--space-xs);
+    padding: var(--space-sm) 0;
+    margin-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.toolbar-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.toolbar-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.content-editor {
+    flex: 1;
+    border: none;
+    font-size: 1rem;
+    line-height: 1.8;
+    resize: none;
+    font-family: inherit;
+}
+
+.content-editor:focus {
+    outline: none;
+}
+
+.editor-footer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.save-status {
+    color: var(--success);
+}
+
+@media (max-width: 1024px) {
+    .editor-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .meta-panel {
+        order: 2;
+    }
+    
+    .editor-panel {
+        order: 1;
+    }
+}
+</style>
