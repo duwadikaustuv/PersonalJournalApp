@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\analyticspage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\analyticspage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\analyticspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\analyticspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\timelinepage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\timelinepage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
@@ -67,19 +75,45 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "AnalyticsPage.razor.css",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor.css",
+              "RelativeDocumentMoniker": "Components\\Pages\\AnalyticsPage.razor.css",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor.css",
+              "RelativeToolTip": "Components\\Pages\\AnalyticsPage.razor.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-12-20T22:02:33.39Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AnalyticsPage.razor",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\AnalyticsPage.razor",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor",
+              "RelativeToolTip": "Components\\Pages\\AnalyticsPage.razor",
+              "ViewState": "AgIAACsAAAAAAAAAAAAqwEUAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-20T22:02:23.423Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "TimelinePage.razor.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor.css",
               "RelativeDocumentMoniker": "Components\\Pages\\TimelinePage.razor.css",
               "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor.css",
               "RelativeToolTip": "Components\\Pages\\TimelinePage.razor.css",
-              "ViewState": "AgIAAFcBAAAAAAAAAAAgwH4BAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFkBAAAAAAAAAAAAwH4BAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-12-20T22:00:29.246Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "TimelinePage.razor",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\TimelinePage.razor",
@@ -92,7 +126,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "CalendarPage.razor.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor.css",
               "RelativeDocumentMoniker": "Components\\Pages\\CalendarPage.razor.css",
@@ -105,7 +139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "CalendarPage.razor",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\CalendarPage.razor",
@@ -118,7 +152,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "TodayPage.razor.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor.css",
               "RelativeDocumentMoniker": "Components\\Pages\\TodayPage.razor.css",
@@ -131,7 +165,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "TodayPage.razor",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\TodayPage.razor",
@@ -144,7 +178,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "MainLayout.razor.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\MainLayout.razor.css",
               "RelativeDocumentMoniker": "Components\\Layout\\MainLayout.razor.css",
@@ -157,7 +191,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "MainLayout.razor",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\MainLayout.razor",
               "RelativeDocumentMoniker": "Components\\Layout\\MainLayout.razor",
@@ -170,7 +204,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "NavMenu.razor.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\NavMenu.razor.css",
               "RelativeDocumentMoniker": "Components\\Layout\\NavMenu.razor.css",
@@ -183,7 +217,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "NavMenu.razor",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\NavMenu.razor",
               "RelativeDocumentMoniker": "Components\\Layout\\NavMenu.razor",
@@ -196,7 +230,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": ".gitignore",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\.gitignore",
               "RelativeDocumentMoniker": ".gitignore",
@@ -209,7 +243,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "variables.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\wwwroot\\css\\variables.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\variables.css",
@@ -222,7 +256,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "app.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\wwwroot\\css\\app.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\app.css",
