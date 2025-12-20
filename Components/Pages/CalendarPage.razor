@@ -1,0 +1,230 @@
+@page "/calendar"
+
+<div class="page-content">
+    <div class="page-header">
+        <div class="header-left">
+            <h1>Calendar</h1>
+            <p class="page-subtitle">View and manage your journal entries</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary">Jump to Date</button>
+            <button class="btn btn-primary">+ New Entry</button>
+        </div>
+    </div>
+
+    <div class="calendar-layout">
+        <!-- Left: Calendar Grid -->
+        <div class="calendar-section">
+            <div class="card calendar-card">
+                <!-- Calendar Header -->
+                <div class="calendar-header">
+                    <button class="nav-btn">‹</button>
+                    <h2 class="calendar-month">December 2025</h2>
+                    <button class="nav-btn">›</button>
+                </div>
+
+                <!-- Weekday Headers -->
+                <div class="calendar-weekdays">
+                    <div class="weekday">S</div>
+                    <div class="weekday">M</div>
+                    <div class="weekday">T</div>
+                    <div class="weekday">W</div>
+                    <div class="weekday">T</div>
+                    <div class="weekday">F</div>
+                    <div class="weekday">S</div>
+                </div>
+
+                <!-- Calendar Grid -->
+                <div class="calendar-grid">
+                    <!-- Previous Month Days -->
+                    <button class="calendar-day other-month">
+                        <span class="day-number">29</span>
+                    </button>
+                    <button class="calendar-day other-month">
+                        <span class="day-number">30</span>
+                    </button>
+
+                    <!-- December Days -->
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">1</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">2</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">3</span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">4</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">5</span>
+                        <span class="dot"></span>
+                    </button>
+                    
+                    <button class="calendar-day">
+                        <span class="day-number">6</span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">7</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">8</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">9</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">10</span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">11</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">12</span>
+                    </button>
+
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">13</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">14</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">15</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">16</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">17</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">18</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">19</span>
+                        <span class="dot"></span>
+                    </button>
+
+                    <button class="calendar-day has-entry">
+                        <span class="day-number">20</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day today active">
+                        <span class="day-number">21</span>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">22</span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">23</span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">24</span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">25</span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">26</span>
+                    </button>
+
+                    <button class="calendar-day">
+                        <span class="day-number">27</span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">28</span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">29</span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">30</span>
+                    </button>
+                    <button class="calendar-day">
+                        <span class="day-number">31</span>
+                    </button>
+
+                    <!-- Next Month Days -->
+                    <button class="calendar-day other-month">
+                        <span class="day-number">1</span>
+                    </button>
+                    <button class="calendar-day other-month">
+                        <span class="day-number">2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Entry Preview -->
+        <div class="preview-section">
+            <div class="card preview-card">
+                <div class="preview-header">
+                    <div class="preview-date-info">
+                        <div class="preview-day">Saturday, December 21</div>
+                        <div class="preview-year">2025</div>
+                    </div>
+                    <div class="preview-mood-badge">Happy</div>
+                </div>
+
+                <div class="preview-content">
+                    <h3 class="preview-title">A Productive Saturday</h3>
+                    <p class="preview-text">
+                        Today was a productive day! I managed to complete most of my tasks and even had time for a walk in the park.
+                        Feeling grateful for good health, supportive friends, and progress on my goals...
+                    </p>
+                </div>
+
+                <div class="preview-meta">
+                    <span class="meta-badge">3 tags</span>
+                    <span class="meta-badge">87 words</span>
+                </div>
+
+                <div class="preview-tags">
+                    <span class="tag">Work</span>
+                    <span class="tag">Health</span>
+                    <span class="tag">Personal</span>
+                </div>
+
+                <div class="preview-actions">
+                    <button class="btn btn-primary full-width">Edit Entry</button>
+                    <button class="btn btn-secondary full-width">View Details</button>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="card stats-card">
+                <h3 class="stats-title">This Month</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">21</div>
+                        <div class="stat-label">Entries</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">10</div>
+                        <div class="stat-label">Missed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">68%</div>
+                        <div class="stat-label">Complete</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,274 @@
+@page "/timeline"
+
+<div class="page-content">
+    <div class="page-header">
+        <div class="header-left">
+            <h1>Timeline</h1>
+            <p class="page-subtitle">Browse all your journal entries</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary">Filter</button>
+            <button class="btn btn-primary">+ New Entry</button>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label class="filter-label">Sort by</label>
+            <select class="filter-select">
+                <option>Newest First</option>
+                <option>Oldest First</option>
+                <option>Most Words</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Mood</label>
+            <select class="filter-select">
+                <option>All Moods</option>
+                <option>Happy</option>
+                <option>Calm</option>
+                <option>Sad</option>
+                <option>Anxious</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Tags</label>
+            <select class="filter-select">
+                <option>All Tags</option>
+                <option>Work</option>
+                <option>Health</option>
+                <option>Personal</option>
+            </select>
+        </div>
+        <button class="clear-filters-btn">Clear All</button>
+    </div>
+
+    <!-- Entries List -->
+    <div class="timeline-content">
+        <div class="timeline-header">
+            <span class="results-count">Showing 21 entries</span>
+        </div>
+
+        <div class="entries-list">
+            <!-- Entry Card 1 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="date-day">21</span>
+                        <span class="date-month">Dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3 class="entry-title">A Productive Saturday</h3>
+                        <div class="entry-meta">
+                            <span class="meta-item">Saturday, December 21, 2025</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-item">10:42 PM</span>
+                        </div>
+                    </div>
+                    <div class="entry-mood">
+                        <span class="mood-badge">Happy</span>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-excerpt">
+                        Today was a productive day! I managed to complete most of my tasks and even had time for a walk in the park.
+                        Feeling grateful for good health, supportive friends, and progress on my goals...
+                    </p>
+                </div>
+                <div class="entry-footer">
+                    <div class="entry-tags">
+                        <span class="tag">Work</span>
+                        <span class="tag">Health</span>
+                        <span class="tag">Personal</span>
+                    </div>
+                    <div class="entry-stats">
+                        <span class="stat">87 words</span>
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <button class="action-btn">View</button>
+                    <button class="action-btn">Edit</button>
+                    <button class="action-btn danger">Delete</button>
+                </div>
+            </div>
+
+            <!-- Entry Card 2 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="date-day">20</span>
+                        <span class="date-month">Dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3 class="entry-title">Friday Reflections</h3>
+                        <div class="entry-meta">
+                            <span class="meta-item">Friday, December 20, 2025</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-item">9:15 PM</span>
+                        </div>
+                    </div>
+                    <div class="entry-mood">
+                        <span class="mood-badge mood-calm">Calm</span>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-excerpt">
+                        Ending the work week with a sense of peace. Had a great team meeting today and received positive feedback on the project.
+                        Looking forward to a relaxing weekend ahead...
+                    </p>
+                </div>
+                <div class="entry-footer">
+                    <div class="entry-tags">
+                        <span class="tag">Work</span>
+                        <span class="tag">Goals</span>
+                    </div>
+                    <div class="entry-stats">
+                        <span class="stat">124 words</span>
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <button class="action-btn">View</button>
+                    <button class="action-btn">Edit</button>
+                    <button class="action-btn danger">Delete</button>
+                </div>
+            </div>
+
+            <!-- Entry Card 3 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="date-day">19</span>
+                        <span class="date-month">Dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3 class="entry-title">Midweek Check-in</h3>
+                        <div class="entry-meta">
+                            <span class="meta-item">Thursday, December 19, 2025</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-item">8:30 PM</span>
+                        </div>
+                    </div>
+                    <div class="entry-mood">
+                        <span class="mood-badge">Happy</span>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-excerpt">
+                        Made significant progress on my personal goals today. Started a new book and went for an evening jog.
+                        Feeling energized and motivated to keep this momentum going...
+                    </p>
+                </div>
+                <div class="entry-footer">
+                    <div class="entry-tags">
+                        <span class="tag">Health</span>
+                        <span class="tag">Personal</span>
+                        <span class="tag">Goals</span>
+                    </div>
+                    <div class="entry-stats">
+                        <span class="stat">156 words</span>
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <button class="action-btn">View</button>
+                    <button class="action-btn">Edit</button>
+                    <button class="action-btn danger">Delete</button>
+                </div>
+            </div>
+
+            <!-- Entry Card 4 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="date-day">18</span>
+                        <span class="date-month">Dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3 class="entry-title">Wednesday Wellness</h3>
+                        <div class="entry-meta">
+                            <span class="meta-item">Wednesday, December 18, 2025</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-item">7:45 PM</span>
+                        </div>
+                    </div>
+                    <div class="entry-mood">
+                        <span class="mood-badge mood-calm">Calm</span>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-excerpt">
+                        Took some time for self-care today. Did a yoga session in the morning and cooked a healthy dinner.
+                        These small habits are making a big difference in my overall wellbeing...
+                    </p>
+                </div>
+                <div class="entry-footer">
+                    <div class="entry-tags">
+                        <span class="tag">Health</span>
+                        <span class="tag">Personal</span>
+                    </div>
+                    <div class="entry-stats">
+                        <span class="stat">98 words</span>
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <button class="action-btn">View</button>
+                    <button class="action-btn">Edit</button>
+                    <button class="action-btn danger">Delete</button>
+                </div>
+            </div>
+
+            <!-- Entry Card 5 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="date-day">17</span>
+                        <span class="date-month">Dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3 class="entry-title">Challenging Tuesday</h3>
+                        <div class="entry-meta">
+                            <span class="meta-item">Tuesday, December 17, 2025</span>
+                            <span class="meta-dot">•</span>
+                            <span class="meta-item">10:15 PM</span>
+                        </div>
+                    </div>
+                    <div class="entry-mood">
+                        <span class="mood-badge mood-anxious">Anxious</span>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-excerpt">
+                        Had a tough day at work with several unexpected challenges. Feeling a bit overwhelmed but trying to stay positive.
+                        Reminding myself that difficult days are temporary and tomorrow is a new opportunity...
+                    </p>
+                </div>
+                <div class="entry-footer">
+                    <div class="entry-tags">
+                        <span class="tag">Work</span>
+                    </div>
+                    <div class="entry-stats">
+                        <span class="stat">142 words</span>
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <button class="action-btn">View</button>
+                    <button class="action-btn">Edit</button>
+                    <button class="action-btn danger">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="pagination-btn" disabled>‹ Previous</button>
+            <div class="pagination-pages">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span class="pagination-dots">...</span>
+                <button class="page-btn">8</button>
+            </div>
+            <button class="pagination-btn">Next ›</button>
+        </div>
+    </div>
+</div>
