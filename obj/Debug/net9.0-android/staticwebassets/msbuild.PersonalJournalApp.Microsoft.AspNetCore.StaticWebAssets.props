@@ -12,12 +12,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>e5tk7yf482</Fingerprint>
-      <Integrity>bhCZyC/yM2+DaFXr8z25+5MeWfXWqMJNNA4ZLAXbjjU=</Integrity>
+      <Fingerprint>ixn3xkmv8a</Fingerprint>
+      <Integrity>5kzawttW0Isr+37S5woTg1J848w+ggUdaLv41D+urkU=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>3376</FileLength>
-      <LastWriteTime>Thu, 18 Dec 2025 07:39:44 GMT</LastWriteTime>
+      <FileLength>3360</FileLength>
+      <LastWriteTime>Sat, 20 Dec 2025 21:26:48 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\app.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\bootstrap\bootstrap.min.css'))">
@@ -72,12 +72,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ylk6gomfr8</Fingerprint>
-      <Integrity>1j16TuWtLYQnyKCJTx69yW5EfGU+ZYTwGLAykYXT4iQ=</Integrity>
+      <Fingerprint>qvow9xumd6</Fingerprint>
+      <Integrity>Co1gd/iEHAO8bA2YF8xKiFmhx8Rkl7L+yPxHypxmIDE=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>13</FileLength>
-      <LastWriteTime>Tue, 16 Dec 2025 03:37:49 GMT</LastWriteTime>
+      <FileLength>1124</FileLength>
+      <LastWriteTime>Sat, 20 Dec 2025 21:21:36 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\variables.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))">
@@ -112,12 +112,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ApplicationBundle</AssetTraitValue>
-      <Fingerprint>5v5ste352s</Fingerprint>
-      <Integrity>T055wBT9cC6mdpAz2zYKVnrmh/ZkA3L9Rq4B4Indk5E=</Integrity>
+      <Fingerprint>owo3zsa7pm</Fingerprint>
+      <Integrity>KAyX5uE9DUOrhetKLD11C6H7KwWm0mg2D5/HWOLMkF8=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>5481</FileLength>
-      <LastWriteTime>Thu, 18 Dec 2025 07:39:43 GMT</LastWriteTime>
+      <FileLength>3149</FileLength>
+      <LastWriteTime>Sat, 20 Dec 2025 21:30:33 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\PersonalJournalApp.styles.css'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
