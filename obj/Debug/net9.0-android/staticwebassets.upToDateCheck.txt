@@ -1,10 +1,10 @@
-wwwroot\css\app.css
-wwwroot\css\bootstrap\bootstrap.min.css
-wwwroot\css\bootstrap\bootstrap.min.css.map
-wwwroot\css\variables.css
 wwwroot\index.html
+wwwroot\css\bootstrap\bootstrap.min.css.map
+wwwroot\css\bootstrap\bootstrap.min.css
+wwwroot\css\variables.css
+wwwroot\css\app.css
 C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\app.css
-C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\bootstrap\bootstrap.min.css
-C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\bootstrap\bootstrap.min.css.map
 C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\variables.css
 C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\index.html
+C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\bootstrap\bootstrap.min.css.map
+C:\Data\College\ApplicationDevelopment\FirstCoursework\PersonalJournalApp\wwwroot\css\bootstrap\bootstrap.min.css

@@ -112,12 +112,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ApplicationBundle</AssetTraitValue>
-      <Fingerprint>hbezukr7vm</Fingerprint>
-      <Integrity>w64/h0bW5Rz95DmXKdMwOmafjd9rPLBu1Ja8g09Fd1g=</Integrity>
+      <Fingerprint>l4wokch9l4</Fingerprint>
+      <Integrity>W7MoB84diZGONcwbkl+KW+POFmQq4Md31nB41fBsUmo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>33481</FileLength>
-      <LastWriteTime>Sat, 20 Dec 2025 22:12:45 GMT</LastWriteTime>
+      <FileLength>41338</FileLength>
+      <LastWriteTime>Sat, 20 Dec 2025 22:14:06 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\PersonalJournalApp.styles.css'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>

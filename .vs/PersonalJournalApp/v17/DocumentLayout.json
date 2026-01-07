@@ -3,16 +3,32 @@
   "WorkspaceRootPath": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\timelinepage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\timelinepage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\settingspage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\settingspage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\settingspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\settingspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\calendarpage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\calendarpage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\analyticspage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\analyticspage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\layout\\navmenu.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\layout\\navmenu.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\layout\\mainlayout.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\layout\\mainlayout.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\settingspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\settingspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\analyticspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -21,14 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\timelinepage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\timelinepage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\timelinepage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\timelinepage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\calendarpage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\calendarpage.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\pages\\calendarpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -43,24 +51,12 @@
       "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\pages\\todaypage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\layout\\navmenu.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\layout\\navmenu.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\layout\\mainlayout.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\layout\\mainlayout.razor.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\components\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:components\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -69,6 +65,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\wwwroot\\css\\variables.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:wwwroot\\css\\variables.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|c:\\data\\college\\applicationdevelopment\\firstcoursework\\personaljournalapp\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{F5DB17AC-F479-4F18-924E-9E218B18E205}|PersonalJournalApp.csproj|solutionrelative:wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -78,141 +78,36 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "SettingsPage.razor.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\SettingsPage.razor.css",
               "RelativeDocumentMoniker": "Components\\Pages\\SettingsPage.razor.css",
               "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\SettingsPage.razor.css",
               "RelativeToolTip": "Components\\Pages\\SettingsPage.razor.css",
-              "ViewState": "AgIAAEsBAAAAAAAAAAAgwGABAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAKkAAAAAAAAAAAAgwLIAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T22:12:44.841Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T22:12:44.841Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "SettingsPage.razor",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\SettingsPage.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\SettingsPage.razor",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\SettingsPage.razor",
-              "RelativeToolTip": "Components\\Pages\\SettingsPage.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-20T22:12:34.737Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AnalyticsPage.razor.css",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor.css",
-              "RelativeDocumentMoniker": "Components\\Pages\\AnalyticsPage.razor.css",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor.css",
-              "RelativeToolTip": "Components\\Pages\\AnalyticsPage.razor.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T22:02:33.39Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AnalyticsPage.razor",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\AnalyticsPage.razor",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor",
-              "RelativeToolTip": "Components\\Pages\\AnalyticsPage.razor",
-              "ViewState": "AgIAACsAAAAAAAAAAAAqwEUAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-20T22:02:23.423Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "TimelinePage.razor.css",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor.css",
-              "RelativeDocumentMoniker": "Components\\Pages\\TimelinePage.razor.css",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor.css",
-              "RelativeToolTip": "Components\\Pages\\TimelinePage.razor.css",
-              "ViewState": "AgIAAFkBAAAAAAAAAAAAwH4BAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T22:00:29.246Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 0,
               "Title": "TimelinePage.razor",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor",
               "RelativeDocumentMoniker": "Components\\Pages\\TimelinePage.razor",
               "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor",
               "RelativeToolTip": "Components\\Pages\\TimelinePage.razor",
-              "ViewState": "AgIAAOsAAAAAAAAAAAAqwBEBAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAowHEAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-12-20T22:00:15.847Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "CalendarPage.razor.css",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor.css",
-              "RelativeDocumentMoniker": "Components\\Pages\\CalendarPage.razor.css",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor.css",
-              "RelativeToolTip": "Components\\Pages\\CalendarPage.razor.css",
-              "ViewState": "AgIAACYBAAAAAAAAAAAAwEsBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T21:49:32.678Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "CalendarPage.razor",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\CalendarPage.razor",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor",
-              "RelativeToolTip": "Components\\Pages\\CalendarPage.razor",
-              "ViewState": "AgIAAL8AAAAAAAAAAAAqwOUAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-20T21:49:08.663Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "TodayPage.razor.css",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor.css",
-              "RelativeDocumentMoniker": "Components\\Pages\\TodayPage.razor.css",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor.css",
-              "RelativeToolTip": "Components\\Pages\\TodayPage.razor.css",
-              "ViewState": "AgIAAEMBAAAAAAAAAAAAwGgBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T21:35:15.016Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "TodayPage.razor",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor",
-              "RelativeDocumentMoniker": "Components\\Pages\\TodayPage.razor",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor",
-              "RelativeToolTip": "Components\\Pages\\TodayPage.razor",
-              "ViewState": "AgIAAMEAAAAAAAAAAAAqwOcAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-20T21:32:09.364Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 5,
               "Title": "MainLayout.razor.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\MainLayout.razor.css",
               "RelativeDocumentMoniker": "Components\\Layout\\MainLayout.razor.css",
@@ -220,25 +115,11 @@
               "RelativeToolTip": "Components\\Layout\\MainLayout.razor.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T21:29:31.947Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T21:29:31.947Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "MainLayout.razor",
-              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\MainLayout.razor",
-              "RelativeDocumentMoniker": "Components\\Layout\\MainLayout.razor",
-              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\MainLayout.razor",
-              "RelativeToolTip": "Components\\Layout\\MainLayout.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-20T21:29:23.911Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 4,
               "Title": "NavMenu.razor.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\NavMenu.razor.css",
               "RelativeDocumentMoniker": "Components\\Layout\\NavMenu.razor.css",
@@ -246,12 +127,119 @@
               "RelativeToolTip": "Components\\Layout\\NavMenu.razor.css",
               "ViewState": "AgIAAHwAAAAAAAAAAAAAwKEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T21:28:19.031Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T21:28:19.031Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AnalyticsPage.razor.css",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor.css",
+              "RelativeDocumentMoniker": "Components\\Pages\\AnalyticsPage.razor.css",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor.css",
+              "RelativeToolTip": "Components\\Pages\\AnalyticsPage.razor.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-12-20T22:02:33.39Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CalendarPage.razor.css",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor.css",
+              "RelativeDocumentMoniker": "Components\\Pages\\CalendarPage.razor.css",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor.css",
+              "RelativeToolTip": "Components\\Pages\\CalendarPage.razor.css",
+              "ViewState": "AgIAACYBAAAAAAAAAAAAwEsBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-12-20T21:49:32.678Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "TimelinePage.razor.css",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor.css",
+              "RelativeDocumentMoniker": "Components\\Pages\\TimelinePage.razor.css",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TimelinePage.razor.css",
+              "RelativeToolTip": "Components\\Pages\\TimelinePage.razor.css",
+              "ViewState": "AgIAAFkBAAAAAAAAAAAAwH4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-12-20T22:00:29.246Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AnalyticsPage.razor",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\AnalyticsPage.razor",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\AnalyticsPage.razor",
+              "RelativeToolTip": "Components\\Pages\\AnalyticsPage.razor",
+              "ViewState": "AgIAACsAAAAAAAAAAAAqwEUAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-20T22:02:23.423Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SettingsPage.razor",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\SettingsPage.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\SettingsPage.razor",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\SettingsPage.razor",
+              "RelativeToolTip": "Components\\Pages\\SettingsPage.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-20T22:12:34.737Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CalendarPage.razor",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\CalendarPage.razor",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\CalendarPage.razor",
+              "RelativeToolTip": "Components\\Pages\\CalendarPage.razor",
+              "ViewState": "AgIAAL8AAAAAAAAAAAAqwOUAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-20T21:49:08.663Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "TodayPage.razor.css",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor.css",
+              "RelativeDocumentMoniker": "Components\\Pages\\TodayPage.razor.css",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor.css",
+              "RelativeToolTip": "Components\\Pages\\TodayPage.razor.css",
+              "ViewState": "AgIAAEMBAAAAAAAAAAAAwGgBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-12-20T21:35:15.016Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 11,
+              "Title": "TodayPage.razor",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\TodayPage.razor",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Pages\\TodayPage.razor",
+              "RelativeToolTip": "Components\\Pages\\TodayPage.razor",
+              "ViewState": "AgIAAMEAAAAAAAAAAAAqwOcAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-20T21:32:09.364Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "MainLayout.razor",
+              "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\MainLayout.razor",
+              "RelativeDocumentMoniker": "Components\\Layout\\MainLayout.razor",
+              "ToolTip": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\MainLayout.razor",
+              "RelativeToolTip": "Components\\Layout\\MainLayout.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-20T21:29:23.911Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
               "Title": "NavMenu.razor",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\Components\\Layout\\NavMenu.razor",
               "RelativeDocumentMoniker": "Components\\Layout\\NavMenu.razor",
@@ -259,12 +247,11 @@
               "RelativeToolTip": "Components\\Layout\\NavMenu.razor",
               "ViewState": "AgIAABgAAAAAAAAAAAAqwD4AAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-20T21:27:30.733Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T21:27:30.733Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 14,
               "Title": ".gitignore",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\.gitignore",
               "RelativeDocumentMoniker": ".gitignore",
@@ -272,12 +259,11 @@
               "RelativeToolTip": ".gitignore",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-12-20T21:24:10.458Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T21:24:10.458Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 15,
               "Title": "variables.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\wwwroot\\css\\variables.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\variables.css",
@@ -285,12 +271,11 @@
               "RelativeToolTip": "wwwroot\\css\\variables.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T21:21:27.852Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T21:21:27.852Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "app.css",
               "DocumentMoniker": "C:\\Data\\College\\ApplicationDevelopment\\FirstCoursework\\PersonalJournalApp\\wwwroot\\css\\app.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\app.css",
@@ -298,8 +283,7 @@
               "RelativeToolTip": "wwwroot\\css\\app.css",
               "ViewState": "AgIAAJoAAAAAAAAAAAAgwLIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-20T21:21:03.162Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T21:21:03.162Z"
             }
           ]
         }
