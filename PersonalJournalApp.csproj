@@ -74,7 +74,6 @@
 
     <ItemGroup>
       <Folder Include="Data\" />
-      <Folder Include="Entities\" />
       <Folder Include="Models\Display\" />
       <Folder Include="Models\Input\" />
       <Folder Include="Services\" />

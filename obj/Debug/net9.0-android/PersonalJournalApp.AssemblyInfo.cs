@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PersonalJournalApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+0d43b2a2bf179bbad32707559e83c7d48b3d6fe9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+d5fbf954893c234aa9151061ba44ab736bd15661")]
 [assembly: System.Reflection.AssemblyProductAttribute("PersonalJournalApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PersonalJournalApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
