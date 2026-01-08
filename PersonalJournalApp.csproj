@@ -73,7 +73,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\" />
       <Folder Include="Models\Display\" />
       <Folder Include="Models\Input\" />
       <Folder Include="Services\" />
