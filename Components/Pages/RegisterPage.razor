@@ -1,4 +1,5 @@
 @page "/register"
+@layout PersonalJournalApp.Components.Layout.EmptyLayout
 @using PersonalJournalApp.Models.Input
 @using PersonalJournalApp.Services
 @inject AuthService AuthService
@@ -30,7 +31,7 @@
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <InputText id="email" type="email" @bind-Value="registerModel.Email" class="form-control" placeholder="Enter your email" />
+                <InputText id="email" @bind-Value="registerModel.Email" class="form-control" placeholder="Enter your email" />
                 <ValidationMessage For="@(() => registerModel.Email)" class="text-danger" />
             </div>
 
@@ -49,11 +50,11 @@
             <button type="submit" class="btn-primary" disabled="@isLoading">
                 @if (isLoading)
                 {
-                    <span>Creating account...</span>
+                    <span>Creating Account...</span>
                 }
                 else
                 {
-                    <span>Sign Up</span>
+                    <span>Create Account</span>
                 }
             </button>
         </EditForm>

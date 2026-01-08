@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PersonalJournalApp.Data;
 using PersonalJournalApp.Entities;
 using PersonalJournalApp.Services;
+using PersonalJournalApp.Auth;
 
 namespace PersonalJournalApp
 {
@@ -50,6 +52,13 @@ namespace PersonalJournalApp
             builder.Services.AddScoped<AnalyticsService>();
             builder.Services.AddScoped<SettingsService>();
             builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+            builder.Services.AddScoped<CustomAuthStateProvider>(sp =>
+                (CustomAuthStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
+            builder.Services.AddAuthorizationCore(options =>
+            {
+                options.FallbackPolicy = null;
+            });
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

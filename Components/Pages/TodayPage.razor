@@ -1,208 +1,217 @@
 ﻿@page "/"
 @page "/today"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
 
-<div class="page-content">
-    <div class="page-header">
-        <div class="header-left">
-            <h1>Today's Entry</h1>
-            <p class="page-subtitle">
-                <svg class="subtitle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                Saturday, December 21, 2025
-            </p>
-        </div>
-        <div class="header-actions">
-            <button class="btn btn-secondary">
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                Lock
-            </button>
-            <button class="btn btn-primary">
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                    <polyline points="7 3 7 8 15 8"></polyline>
-                </svg>
-                Save Entry
-            </button>
-        </div>
-    </div>
-
-    <div class="editor-layout">
-        <!-- Left: Meta Panel -->
-        <aside class="meta-panel">
-            <!-- Streak Card -->
-            <div class="card streak-card">
-                <div class="card-header">
-                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17.1 14.5C17.1 17.6 14.5 19.2 12 21 9.5 19.2 6.9 17.6 6.9 14.5c0-2.4 1.5-4.4 3.6-5.2.4-3.5 4.1-5.8 4.1-5.8s3.7 2.3 4.1 5.8c2.1.8 3.6 2.8 3.6 5.2z"></path>
+@if (!isAuthorized)
+{
+    <p>Redirecting...</p>
+}
+else
+{
+    <div class="page-content">
+        <div class="page-header">
+            <div class="header-left">
+                <h1>Today's Entry</h1>
+                <p class="page-subtitle">
+                    <svg class="subtitle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
                     </svg>
-                    <h3>Current Streak</h3>
-                </div>
-                <div class="streak-display">
-                    <div class="streak-number">7</div>
-                    <div class="streak-label">Days in a row</div>
-                </div>
+                    Saturday, December 21, 2025
+                </p>
             </div>
-
-            <!-- Mood Card -->
-            <div class="card">
-                <div class="card-header">
-                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+            <div class="header-actions">
+                <button class="btn btn-secondary">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                    <h3>How are you feeling?</h3>
+                    Lock
+                </button>
+                <button class="btn btn-primary">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save Entry
+                </button>
+            </div>
+        </div>
+
+        <div class="editor-layout">
+            <!-- Left: Meta Panel -->
+            <aside class="meta-panel">
+                <!-- Streak Card -->
+                <div class="card streak-card">
+                    <div class="card-header">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17.1 14.5C17.1 17.6 14.5 19.2 12 21 9.5 19.2 6.9 17.6 6.9 14.5c0-2.4 1.5-4.4 3.6-5.2.4-3.5 4.1-5.8 4.1-5.8s3.7 2.3 4.1 5.8c2.1.8 3.6 2.8 3.6 5.2z"></path>
+                        </svg>
+                        <h3>Current Streak</h3>
+                    </div>
+                    <div class="streak-display">
+                        <div class="streak-number">7</div>
+                        <div class="streak-label">Days in a row</div>
+                    </div>
                 </div>
-                <div class="mood-grid">
-                    <button class="mood-option active" data-mood="happy">
-                        <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                <!-- Mood Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"></circle>
                             <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
                             <line x1="9" y1="9" x2="9.01" y2="9"></line>
                             <line x1="15" y1="9" x2="15.01" y2="9"></line>
                         </svg>
-                        <span class="mood-label">Happy</span>
-                    </button>
-                    <button class="mood-option" data-mood="calm">
-                        <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="8" y1="15" x2="16" y2="15"></line>
-                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                        </svg>
-                        <span class="mood-label">Calm</span>
-                    </button>
-                    <button class="mood-option" data-mood="sad">
-                        <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
-                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                        </svg>
-                        <span class="mood-label">Sad</span>
-                    </button>
-                    <button class="mood-option" data-mood="anxious">
-                        <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="8" y1="15" x2="16" y2="15"></line>
-                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                        </svg>
-                        <span class="mood-label">Anxious</span>
-                    </button>
-                    <button class="mood-option" data-mood="excited">
-                        <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                            <circle cx="9" cy="9" r="1"></circle>
-                            <circle cx="15" cy="9" r="1"></circle>
-                        </svg>
-                        <span class="mood-label">Excited</span>
-                    </button>
-                    <button class="mood-option" data-mood="tired">
-                        <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M8 15h8"></path>
-                            <path d="M9 9h2"></path>
-                            <path d="M13 9h2"></path>
-                        </svg>
-                        <span class="mood-label">Tired</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tags Card -->
-            <div class="card">
-                <div class="card-header">
-                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
-                    </svg>
-                    <h3>Tags</h3>
-                </div>
-                <div class="tags-container">
-                    <span class="tag">Work</span>
-                    <span class="tag">Health</span>
-                    <span class="tag">Personal</span>
-                    <button class="add-tag-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        Add Tag
-                    </button>
-                </div>
-            </div>
-
-            <!-- Category Card -->
-            <div class="card">
-                <div class="card-header">
-                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <h3>Category</h3>
-                </div>
-                <select class="select-input">
-                    <option>Personal</option>
-                    <option>Work</option>
-                    <option>Travel</option>
-                    <option>Goals</option>
-                </select>
-            </div>
-        </aside>
-
-        <!-- Right: Editor -->
-        <div class="editor-section">
-            <div class="card editor-card">
-                <input type="text" class="title-input" placeholder="Give your entry a title..." value="A Productive Saturday" />
-                
-                <div class="editor-toolbar">
-                    <button class="toolbar-btn" title="Bold">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-                            <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-                        </svg>
-                    </button>
-                    <button class="toolbar-btn" title="Italic">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="19" y1="4" x2="10" y2="4"></line>
-                            <line x1="14" y1="20" x2="5" y2="20"></line>
-                            <line x1="15" y1="4" x2="9" y2="20"></line>
-                        </svg>
-                    </button>
-                    <button class="toolbar-btn" title="Heading">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 12h8m-8-6v12m8-12v12M17 7l3-3 3 3m-3 3v8"></path>
-                        </svg>
-                    </button>
-                    <button class="toolbar-btn" title="List">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="8" y1="6" x2="21" y2="6"></line>
-                            <line x1="8" y1="12" x2="21" y2="12"></line>
-                            <line x1="8" y1="18" x2="21" y2="18"></line>
-                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                        </svg>
-                    </button>
-                    <button class="toolbar-btn" title="Quote">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path>
-                            <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path>
-                        </svg>
-                    </button>
+                        <h3>How are you feeling?</h3>
+                    </div>
+                    <div class="mood-grid">
+                        <button class="mood-option active" data-mood="happy">
+                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <span class="mood-label">Happy</span>
+                        </button>
+                        <button class="mood-option" data-mood="calm">
+                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="8" y1="15" x2="16" y2="15"></line>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <span class="mood-label">Calm</span>
+                        </button>
+                        <button class="mood-option" data-mood="sad">
+                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <span class="mood-label">Sad</span>
+                        </button>
+                        <button class="mood-option" data-mood="anxious">
+                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="8" y1="15" x2="16" y2="15"></line>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <span class="mood-label">Anxious</span>
+                        </button>
+                        <button class="mood-option" data-mood="excited">
+                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <circle cx="9" cy="9" r="1"></circle>
+                                <circle cx="15" cy="9" r="1"></circle>
+                            </svg>
+                            <span class="mood-label">Excited</span>
+                        </button>
+                        <button class="mood-option" data-mood="tired">
+                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 15h8"></path>
+                                <path d="M9 9h2"></path>
+                                <path d="M13 9h2"></path>
+                            </svg>
+                            <span class="mood-label">Tired</span>
+                        </button>
+                    </div>
                 </div>
 
-                <textarea class="content-editor" placeholder="Start writing your thoughts...">Today was a productive day! I managed to complete most of my tasks and even had time for a walk in the park. 
+                <!-- Tags Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                        </svg>
+                        <h3>Tags</h3>
+                    </div>
+                    <div class="tags-container">
+                        <span class="tag">Work</span>
+                        <span class="tag">Health</span>
+                        <span class="tag">Personal</span>
+                        <button class="add-tag-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Tag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <h3>Category</h3>
+                    </div>
+                    <select class="select-input">
+                        <option>Personal</option>
+                        <option>Work</option>
+                        <option>Travel</option>
+                        <option>Goals</option>
+                    </select>
+                </div>
+            </aside>
+
+            <!-- Right: Editor -->
+            <div class="editor-section">
+                <div class="card editor-card">
+                    <input type="text" class="title-input" placeholder="Give your entry a title..." value="A Productive Saturday" />
+
+                    <div class="editor-toolbar">
+                        <button class="toolbar-btn" title="Bold">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                                <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" title="Italic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="4" x2="10" y2="4"></line>
+                                <line x1="14" y1="20" x2="5" y2="20"></line>
+                                <line x1="15" y1="4" x2="9" y2="20"></line>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" title="Heading">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12h8m-8-6v12m8-12v12M17 7l3-3 3 3m-3 3v8"></path>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" title="List">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" title="Quote">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path>
+                                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <textarea class="content-editor" placeholder="Start writing your thoughts...">Today was a productive day! I managed to complete most of my tasks and even had time for a walk in the park. 
 
 Feeling grateful for:
 - Good health
@@ -211,22 +220,42 @@ Feeling grateful for:
 
 Looking forward to tomorrow and new opportunities.</textarea>
 
-                <div class="editor-footer">
-                    <div class="word-count">
-                        <svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="4 17 10 11 4 5"></polyline>
-                            <line x1="12" y1="19" x2="20" y2="19"></line>
-                        </svg>
-                        87 words • 456 characters
-                    </div>
-                    <div class="save-status">
-                        <svg class="footer-icon success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        Saved at 10:42 PM
+                    <div class="editor-footer">
+                        <div class="word-count">
+                            <svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="4 17 10 11 4 5"></polyline>
+                                <line x1="12" y1="19" x2="20" y2="19"></line>
+                            </svg>
+                            87 words • 456 characters
+                        </div>
+                        <div class="save-status">
+                            <svg class="footer-icon success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Saved at 10:42 PM
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
+
+@code {
+    private bool isAuthorized = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            isAuthorized = true;
+        }
+    }
+}
