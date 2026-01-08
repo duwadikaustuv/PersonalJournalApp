@@ -1,4 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using PersonalJournalApp.Data;
+using PersonalJournalApp.Entities;
+using PersonalJournalApp.Services;
 
 namespace PersonalJournalApp
 {
@@ -16,12 +22,50 @@ namespace PersonalJournalApp
 
             builder.Services.AddMauiBlazorWebView();
 
+            // Configure SQLite database
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "personaljournalapp.db");
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlite($"Data Source={dbPath}"));
+
+            // Configure ASP.NET Core Identity for MAUI
+            builder.Services.AddIdentityCore<User>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 6;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>();
+
+            // Register services
+            builder.Services.AddScoped<JournalService>();
+            builder.Services.AddScoped<TagService>();
+            builder.Services.AddScoped<CategoryService>();
+            builder.Services.AddScoped<AnalyticsService>();
+            builder.Services.AddScoped<SettingsService>();
+            builder.Services.AddScoped<AuthService>();
+
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
-    		builder.Logging.AddDebug();
+            builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
+            var app = builder.Build();
+
+            // Initialize database
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                DatabaseInitializer.InitializeAsync(context).Wait();
+            }
+
+            return app;
         }
     }
 }
