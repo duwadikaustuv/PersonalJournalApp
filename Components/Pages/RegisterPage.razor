@@ -1,0 +1,94 @@
+@page "/register"
+@using PersonalJournalApp.Models.Input
+@using PersonalJournalApp.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">Create Account</h2>
+        <p class="auth-subtitle">Start your journaling journey</p>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger">@errorMessage</div>
+        }
+
+        @if (!string.IsNullOrEmpty(successMessage))
+        {
+            <div class="alert alert-success">@successMessage</div>
+        }
+
+        <EditForm Model="@registerModel" OnValidSubmit="@HandleRegister" class="auth-form">
+            <DataAnnotationsValidator />
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <InputText id="username" @bind-Value="registerModel.UserName" class="form-control" placeholder="Choose a username" />
+                <ValidationMessage For="@(() => registerModel.UserName)" class="text-danger" />
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <InputText id="email" type="email" @bind-Value="registerModel.Email" class="form-control" placeholder="Enter your email" />
+                <ValidationMessage For="@(() => registerModel.Email)" class="text-danger" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <InputText id="password" type="password" @bind-Value="registerModel.Password" class="form-control" placeholder="Create a password" />
+                <ValidationMessage For="@(() => registerModel.Password)" class="text-danger" />
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <InputText id="confirmPassword" type="password" @bind-Value="registerModel.ConfirmPassword" class="form-control" placeholder="Confirm your password" />
+                <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="text-danger" />
+            </div>
+
+            <button type="submit" class="btn-primary" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span>Creating account...</span>
+                }
+                else
+                {
+                    <span>Sign Up</span>
+                }
+            </button>
+        </EditForm>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/login" class="auth-link">Sign in</a></p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private RegisterInputModel registerModel = new();
+    private bool isLoading = false;
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+
+    private async Task HandleRegister()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+
+        var result = await AuthService.RegisterAsync(registerModel);
+
+        if (result.Success)
+        {
+            successMessage = "Account created successfully! Redirecting to login...";
+            await Task.Delay(1500);
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            errorMessage = result.ErrorMessage ?? "Registration failed. Please try again.";
+        }
+
+        isLoading = false;
+    }
+}
