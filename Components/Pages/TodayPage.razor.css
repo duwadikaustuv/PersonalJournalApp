@@ -50,58 +50,29 @@
     gap: 16px;
 }
 
-/* Cards */
-.card-header {
+/* Meta Cards */
+.meta-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.meta-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 16px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #111827;
 }
 
-    .card-header h3 {
-        font-size: 0.9375rem;
-        font-weight: 600;
-        color: #111827;
-        margin: 0;
-    }
-
-.card-icon {
+.meta-icon {
     width: 18px;
     height: 18px;
     color: #6366f1;
     flex-shrink: 0;
-}
-
-/* Streak Card */
-.streak-card {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    color: white;
-    border: none;
-}
-
-    .streak-card .card-header h3,
-    .streak-card .card-icon {
-        color: white;
-    }
-
-.streak-display {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.streak-number {
-    font-size: 3.5rem;
-    font-weight: 800;
-    color: white;
-    line-height: 1;
-    margin-bottom: 8px;
-}
-
-.streak-label {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.025em;
 }
 
 /* Mood Grid */
@@ -111,7 +82,7 @@
     gap: 10px;
 }
 
-.mood-option {
+.mood-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -122,27 +93,28 @@
     background: #ffffff;
     transition: all 0.15s ease;
     gap: 8px;
+    cursor: pointer;
 }
 
-    .mood-option:hover {
+    .mood-btn:hover {
         border-color: #c7d2fe;
         background: #f5f7ff;
         transform: translateY(-2px);
     }
 
-    .mood-option.active {
+    .mood-btn.active {
         border-color: #6366f1;
         background: #eef2ff;
     }
 
 .mood-icon {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     color: #6b7280;
     transition: color 0.15s;
 }
 
-.mood-option.active .mood-icon {
+.mood-btn.active .mood-icon {
     color: #6366f1;
 }
 
@@ -153,56 +125,39 @@
 }
 
 /* Tags */
-.tags-container {
+.tags-list {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
 }
 
-.tag {
-    display: inline-flex;
+.tag-checkbox {
+    display: flex;
     align-items: center;
-    padding: 6px 12px;
-    background: #f3f4f6;
-    border: 1px solid #e5e7eb;
+    gap: 8px;
+    padding: 8px;
     border-radius: 6px;
-    font-size: 0.8125rem;
-    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+    .tag-checkbox:hover {
+        background: #f3f4f6;
+    }
+
+.tag-label {
+    font-size: 0.875rem;
     color: #374151;
-    transition: all 0.15s;
 }
 
-    .tag:hover {
-        background: #e5e7eb;
-    }
-
-.add-tag-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: #ffffff;
-    border: 1.5px dashed #d1d5db;
-    border-radius: 6px;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: #6b7280;
-    transition: all 0.15s;
+.tag-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
 }
-
-    .add-tag-btn svg {
-        width: 14px;
-        height: 14px;
-    }
-
-    .add-tag-btn:hover {
-        border-color: #6366f1;
-        color: #6366f1;
-        background: #f5f7ff;
-    }
 
 /* Select Input */
-.select-input {
+.form-select {
     width: 100%;
     padding: 10px 14px;
     border: 1.5px solid #e5e7eb;
@@ -215,7 +170,7 @@
     cursor: pointer;
 }
 
-    .select-input:focus {
+    .form-select:focus {
         outline: none;
         border-color: #6366f1;
     }
@@ -223,6 +178,7 @@
 /* Editor Section */
 .editor-section {
     min-height: 600px;
+    position: relative;
 }
 
 .editor-card {
@@ -230,9 +186,47 @@
     display: flex;
     flex-direction: column;
     padding: 28px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
-.title-input {
+.fullscreen-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.15s;
+    z-index: 10;
+}
+
+    .fullscreen-toggle:hover {
+        border-color: #6366f1;
+        color: #6366f1;
+        background: #f5f7ff;
+    }
+
+    .fullscreen-toggle svg {
+        width: 18px;
+        height: 18px;
+    }
+
+.editor-header {
+    margin-bottom: 16px;
+}
+
+.entry-title {
+    width: 100%;
     border: none;
     font-size: 1.75rem;
     font-weight: 700;
@@ -243,66 +237,19 @@
     transition: border-color 0.15s;
 }
 
-    .title-input::placeholder {
+    .entry-title::placeholder {
         color: #d1d5db;
     }
 
-    .title-input:focus {
+    .entry-title:focus {
         outline: none;
         border-bottom-color: #6366f1;
     }
 
-.editor-toolbar {
-    display: flex;
-    gap: 4px;
-    padding: 12px 0;
-    margin-bottom: 16px;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.toolbar-btn {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    background: transparent;
-    color: #6b7280;
-    transition: all 0.15s;
-}
-
-    .toolbar-btn svg {
-        width: 18px;
-        height: 18px;
-    }
-
-    .toolbar-btn:hover {
-        background: #f3f4f6;
-        color: #374151;
-    }
-
-    .toolbar-btn:active {
-        background: #e5e7eb;
-    }
-
-.content-editor {
+.editor-body {
     flex: 1;
-    border: none;
-    font-size: 1rem;
-    line-height: 1.75;
-    resize: none;
-    font-family: inherit;
-    color: #374151;
+    margin-bottom: 16px;
 }
-
-    .content-editor::placeholder {
-        color: #d1d5db;
-    }
-
-    .content-editor:focus {
-        outline: none;
-    }
 
 .editor-footer {
     display: flex;
@@ -328,6 +275,47 @@
 
     .footer-icon.success {
         color: #10b981;
+    }
+
+/* Fullscreen Mode */
+.fullscreen-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: #f9fafb;
+    padding: 0;
+    margin: 0;
+}
+
+    .fullscreen-mode .editor-layout {
+        grid-template-columns: 1fr;
+        height: 100vh;
+        margin: 0;
+        gap: 0;
+    }
+
+    .fullscreen-mode .editor-section {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        height: 100vh;
+    }
+
+    .fullscreen-mode .editor-card {
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 40px 60px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .fullscreen-mode .fullscreen-toggle {
+        top: 30px;
+        right: 30px;
     }
 
 @media (max-width: 1024px) {
@@ -357,4 +345,8 @@
         .header-actions .btn {
             flex: 1;
         }
+
+    .fullscreen-mode .editor-card {
+        padding: 30px 20px;
+    }
 }

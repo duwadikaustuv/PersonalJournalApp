@@ -1,8 +1,16 @@
 ﻿@page "/"
 @page "/today"
 @using Microsoft.AspNetCore.Components.Authorization
+@using PersonalJournalApp.Models.Input
+@using PersonalJournalApp.Services
+@using PersonalJournalApp.Auth
+@using PersonalJournalApp.Components.Shared
 @inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthStateProvider CustomAuthStateProvider
 @inject NavigationManager Navigation
+@inject JournalService JournalService
+@inject CategoryService CategoryService
+@inject TagService TagService
 
 @if (!isAuthorized)
 {
@@ -10,230 +18,211 @@
 }
 else
 {
-    <div class="page-content">
-        <div class="page-header">
-            <div class="header-left">
-                <h1>Today's Entry</h1>
-                <p class="page-subtitle">
-                    <svg class="subtitle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    Saturday, December 21, 2025
-                </p>
+    <div class="page-content @(isFullscreen ? "fullscreen-mode" : "")">
+        @if (!isFullscreen)
+        {
+            <div class="page-header">
+                <div class="header-left">
+                    <h1>Today's Entry</h1>
+                    <p class="page-subtitle">
+                        <svg class="subtitle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        @DateTime.Now.ToString("dddd, MMMM d, yyyy")
+                    </p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" @onclick="SaveEntry" disabled="@isSaving">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        @(isSaving ? "Saving..." : "Save Entry")
+                    </button>
+                </div>
             </div>
-            <div class="header-actions">
-                <button class="btn btn-secondary">
-                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                    Lock
-                </button>
-                <button class="btn btn-primary">
-                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        <polyline points="7 3 7 8 15 8"></polyline>
-                    </svg>
-                    Save Entry
-                </button>
-            </div>
-        </div>
+        }
 
         <div class="editor-layout">
-            <!-- Left: Meta Panel -->
-            <aside class="meta-panel">
-                <!-- Streak Card -->
-                <div class="card streak-card">
-                    <div class="card-header">
-                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17.1 14.5C17.1 17.6 14.5 19.2 12 21 9.5 19.2 6.9 17.6 6.9 14.5c0-2.4 1.5-4.4 3.6-5.2.4-3.5 4.1-5.8 4.1-5.8s3.7 2.3 4.1 5.8c2.1.8 3.6 2.8 3.6 5.2z"></path>
-                        </svg>
-                        <h3>Current Streak</h3>
-                    </div>
-                    <div class="streak-display">
-                        <div class="streak-number">7</div>
-                        <div class="streak-label">Days in a row</div>
-                    </div>
-                </div>
-
-                <!-- Mood Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                        </svg>
-                        <h3>How are you feeling?</h3>
-                    </div>
-                    <div class="mood-grid">
-                        <button class="mood-option active" data-mood="happy">
-                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            @if (!isFullscreen)
+            {
+                <!-- Left: Meta Panel -->
+                <aside class="meta-panel">
+                    <!-- Mood Selection -->
+                    <div class="meta-card">
+                        <div class="meta-header">
+                            <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
                                 <line x1="9" y1="9" x2="9.01" y2="9"></line>
                                 <line x1="15" y1="9" x2="15.01" y2="9"></line>
                             </svg>
-                            <span class="mood-label">Happy</span>
-                        </button>
-                        <button class="mood-option" data-mood="calm">
-                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="8" y1="15" x2="16" y2="15"></line>
-                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                            </svg>
-                            <span class="mood-label">Calm</span>
-                        </button>
-                        <button class="mood-option" data-mood="sad">
-                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
-                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                            </svg>
-                            <span class="mood-label">Sad</span>
-                        </button>
-                        <button class="mood-option" data-mood="anxious">
-                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="8" y1="15" x2="16" y2="15"></line>
-                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                            </svg>
-                            <span class="mood-label">Anxious</span>
-                        </button>
-                        <button class="mood-option" data-mood="excited">
-                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                <circle cx="9" cy="9" r="1"></circle>
-                                <circle cx="15" cy="9" r="1"></circle>
-                            </svg>
-                            <span class="mood-label">Excited</span>
-                        </button>
-                        <button class="mood-option" data-mood="tired">
-                            <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M8 15h8"></path>
-                                <path d="M9 9h2"></path>
-                                <path d="M13 9h2"></path>
-                            </svg>
-                            <span class="mood-label">Tired</span>
-                        </button>
+                            <span>How are you feeling?</span>
+                        </div>
+                        <div class="mood-grid">
+                            @foreach (var mood in moods)
+                            {
+                                <button class="mood-btn @(entryModel.Mood == mood.Value ? "active" : "")"
+                                        @onclick="() => entryModel.Mood = mood.Value">
+                                    <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        @if (mood.Value == "happy")
+                                        {
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                        }
+                                        else if (mood.Value == "sad")
+                                        {
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                        }
+                                        else if (mood.Value == "calm")
+                                        {
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="8" y1="15" x2="16" y2="15"></line>
+                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                        }
+                                        else if (mood.Value == "anxious")
+                                        {
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M8 15h8"></path>
+                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                        }
+                                        else if (mood.Value == "excited")
+                                        {
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                            <circle cx="9" cy="9" r="1"></circle>
+                                            <circle cx="15" cy="9" r="1"></circle>
+                                        }
+                                        else if (mood.Value == "tired")
+                                        {
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="8" y1="15" x2="16" y2="15"></line>
+                                            <line x1="7" y1="9" x2="11" y2="9"></line>
+                                            <line x1="13" y1="9" x2="17" y2="9"></line>
+                                        }
+                                    </svg>
+                                    <span class="mood-label">@mood.Label</span>
+                                </button>
+                            }
+                        </div>
                     </div>
-                </div>
 
-                <!-- Tags Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-                            <line x1="7" y1="7" x2="7.01" y2="7"></line>
-                        </svg>
-                        <h3>Tags</h3>
-                    </div>
-                    <div class="tags-container">
-                        <span class="tag">Work</span>
-                        <span class="tag">Health</span>
-                        <span class="tag">Personal</span>
-                        <button class="add-tag-btn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <!-- Category Selection -->
+                    <div class="meta-card">
+                        <div class="meta-header">
+                            <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                             </svg>
-                            Add Tag
-                        </button>
+                            <span>Category</span>
+                        </div>
+                        <select class="form-select" @bind="entryModel.CategoryId">
+                            <option value="">No Category</option>
+                            @foreach (var category in categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
                     </div>
-                </div>
 
-                <!-- Category Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        <h3>Category</h3>
+                    <!-- Tags Selection -->
+                    <div class="meta-card">
+                        <div class="meta-header">
+                            <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                            </svg>
+                            <span>Tags</span>
+                        </div>
+                        <div class="tags-list">
+                            @foreach (var tag in tags)
+                            {
+                                <label class="tag-checkbox">
+                                    <input type="checkbox"
+                                           checked="@entryModel.SelectedTagIds.Contains(tag.Id)"
+                                           @onchange="e => ToggleTag(tag.Id, (bool)e.Value!)" />
+                                    <span class="tag-label">@tag.Name</span>
+                                </label>
+                            }
+                        </div>
                     </div>
-                    <select class="select-input">
-                        <option>Personal</option>
-                        <option>Work</option>
-                        <option>Travel</option>
-                        <option>Goals</option>
-                    </select>
-                </div>
-            </aside>
+                </aside>
+            }
 
             <!-- Right: Editor -->
             <div class="editor-section">
-                <div class="card editor-card">
-                    <input type="text" class="title-input" placeholder="Give your entry a title..." value="A Productive Saturday" />
+                <div class="editor-card">
+                    <button class="fullscreen-toggle" @onclick="ToggleFullscreen" title="@(isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen")">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            @if (isFullscreen)
+                            {
+                                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+                            }
+                            else
+                            {
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                            }
+                        </svg>
+                    </button>
 
-                    <div class="editor-toolbar">
-                        <button class="toolbar-btn" title="Bold">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-                                <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-                            </svg>
-                        </button>
-                        <button class="toolbar-btn" title="Italic">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="19" y1="4" x2="10" y2="4"></line>
-                                <line x1="14" y1="20" x2="5" y2="20"></line>
-                                <line x1="15" y1="4" x2="9" y2="20"></line>
-                            </svg>
-                        </button>
-                        <button class="toolbar-btn" title="Heading">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 12h8m-8-6v12m8-12v12M17 7l3-3 3 3m-3 3v8"></path>
-                            </svg>
-                        </button>
-                        <button class="toolbar-btn" title="List">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="8" y1="6" x2="21" y2="6"></line>
-                                <line x1="8" y1="12" x2="21" y2="12"></line>
-                                <line x1="8" y1="18" x2="21" y2="18"></line>
-                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                            </svg>
-                        </button>
-                        <button class="toolbar-btn" title="Quote">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path>
-                                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path>
-                            </svg>
-                        </button>
+                    <div class="editor-header">
+                        <input type="text"
+                               class="entry-title"
+                               placeholder="Entry title..."
+                               @bind="entryModel.Title"
+                               @bind:event="oninput" />
                     </div>
 
-                    <textarea class="content-editor" placeholder="Start writing your thoughts...">Today was a productive day! I managed to complete most of my tasks and even had time for a walk in the park. 
-
-Feeling grateful for:
-- Good health
-- Supportive friends
-- Progress on my goals
-
-Looking forward to tomorrow and new opportunities.</textarea>
+                    <div class="editor-body">
+                        <RichTextEditor EditorId="todayEditor"
+                                        InitialContent="@entryModel.Content"
+                                        Placeholder="What's on your mind today?"
+                                        OnContentChange="HandleContentChange"
+                                        OnWordCountChange="HandleWordCountChange" />
+                    </div>
 
                     <div class="editor-footer">
                         <div class="word-count">
                             <svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="4 17 10 11 4 5"></polyline>
-                                <line x1="12" y1="19" x2="20" y2="19"></line>
+                                <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                                <line x1="9" y1="20" x2="15" y2="20"></line>
+                                <line x1="12" y1="4" x2="12" y2="20"></line>
                             </svg>
-                            87 words • 456 characters
+                            @wordCount words • @characterCount characters
                         </div>
-                        <div class="save-status">
-                            <svg class="footer-icon success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            Saved at 10:42 PM
-                        </div>
+                        @if (!isFullscreen)
+                        {
+                            <div class="save-status">
+                                @if (lastSaved.HasValue)
+                                {
+                                    <svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>Saved @lastSaved.Value.ToString("h:mm tt")</span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary" @onclick="SaveEntry" disabled="@isSaving">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                @(isSaving ? "Saving..." : "Save Entry")
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
@@ -243,6 +232,26 @@ Looking forward to tomorrow and new opportunities.</textarea>
 
 @code {
     private bool isAuthorized = false;
+    private bool isFullscreen = false;
+    private bool isSaving = false;
+    private int wordCount = 0;
+    private int characterCount = 0;
+    private DateTime? lastSaved;
+
+    private JournalEntryInputModel entryModel = new();
+    private List<PersonalJournalApp.Entities.Category> categories = new();
+    private List<PersonalJournalApp.Entities.Tag> tags = new();
+    private int? todayEntryId = null;
+
+    private List<(string Value, string Label)> moods = new()
+    {
+        ("happy", "Happy"),
+        ("sad", "Sad"),
+        ("calm", "Calm"),
+        ("anxious", "Anxious"),
+        ("excited", "Excited"),
+        ("tired", "Tired")
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -256,6 +265,135 @@ Looking forward to tomorrow and new opportunities.</textarea>
         else
         {
             isAuthorized = true;
+            await LoadDataAsync();
+        }
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var userId = CustomAuthStateProvider.GetCurrentUserId();
+        if (string.IsNullOrEmpty(userId)) return;
+
+        // Load categories and tags
+        var categoriesResult = await CategoryService.GetAllCategoriesAsync(userId);
+        if (categoriesResult.Success && categoriesResult.Data != null)
+        {
+            categories = categoriesResult.Data;
+        }
+
+        var tagsResult = await TagService.GetAllTagsAsync(userId);
+        if (tagsResult.Success && tagsResult.Data != null)
+        {
+            tags = tagsResult.Data;
+        }
+
+        // Load today's entry if exists
+        var today = DateTime.Today;
+        var entryResult = await JournalService.GetEntriesByDateRangeAsync(userId, today, today);
+        if (entryResult.Success && entryResult.Data != null && entryResult.Data.Any())
+        {
+            var todayEntry = entryResult.Data.First();
+            todayEntryId = todayEntry.Id;
+
+            entryModel.Title = todayEntry.Title;
+            entryModel.Content = todayEntry.Content;
+            entryModel.Mood = todayEntry.Mood;
+            entryModel.CategoryId = todayEntry.CategoryName != null ?
+                categories.FirstOrDefault(c => c.Name == todayEntry.CategoryName)?.Id : null;
+            entryModel.SelectedTagIds = tags
+                .Where(t => todayEntry.TagNames.Contains(t.Name))
+                .Select(t => t.Id)
+                .ToList();
+        }
+        else
+        {
+            entryModel.Mood = "calm";
+        }
+    }
+
+    private void ToggleFullscreen()
+    {
+        isFullscreen = !isFullscreen;
+    }
+
+    private void HandleContentChange(string htmlContent)
+    {
+        entryModel.Content = htmlContent;
+        characterCount = htmlContent.Length;
+    }
+
+    private void HandleWordCountChange(int count)
+    {
+        wordCount = count;
+    }
+
+    private void ToggleTag(int tagId, bool isChecked)
+    {
+        if (isChecked)
+        {
+            if (!entryModel.SelectedTagIds.Contains(tagId))
+                entryModel.SelectedTagIds.Add(tagId);
+        }
+        else
+        {
+            entryModel.SelectedTagIds.Remove(tagId);
+        }
+    }
+
+    private async Task SaveEntry()
+    {
+        if (string.IsNullOrWhiteSpace(entryModel.Title))
+        {
+            await Application.Current!.MainPage!.DisplayAlert("Validation Error", "Please enter a title for your entry.", "OK");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(entryModel.Content))
+        {
+            await Application.Current!.MainPage!.DisplayAlert("Validation Error", "Please write some content for your entry.", "OK");
+            return;
+        }
+
+        isSaving = true;
+        var userId = CustomAuthStateProvider.GetCurrentUserId();
+
+        try
+        {
+            Common.ServiceResult result;
+
+            if (todayEntryId.HasValue)
+            {
+                // Update existing entry
+                result = await JournalService.UpdateEntryAsync(userId!, todayEntryId.Value, entryModel);
+            }
+            else
+            {
+                // Create new entry
+                var createResult = await JournalService.CreateEntryAsync(userId!, entryModel);
+                result = createResult;
+                if (createResult.Success)
+                {
+                    todayEntryId = createResult.Data;
+                }
+            }
+
+            if (result.Success)
+            {
+                lastSaved = DateTime.Now;
+                await Application.Current!.MainPage!.DisplayAlert("Success", "Entry saved successfully!", "OK");
+            }
+            else
+            {
+                await Application.Current!.MainPage!.DisplayAlert("Error", result.ErrorMessage ?? "Failed to save entry.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current!.MainPage!.DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+        }
+        finally
+        {
+            isSaving = false;
         }
     }
 }
