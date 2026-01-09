@@ -1,0 +1,90 @@
+@implements IAsyncDisposable
+@inject IJSRuntime JSRuntime
+
+<div class="rich-text-editor-container">
+    <div id="@EditorId" class="rich-text-editor"></div>
+</div>
+
+@code {
+    [Parameter] public string EditorId { get; set; } = $"quill-{Guid.NewGuid():N}";
+    [Parameter] public string? InitialContent { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Write your thoughts...";
+    [Parameter] public EventCallback<string> OnContentChange { get; set; }
+    [Parameter] public EventCallback<int> OnWordCountChange { get; set; }
+
+    private DotNetObjectReference<RichTextEditor>? dotNetHelper;
+    private bool isInitialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                dotNetHelper = DotNetObjectReference.Create(this);
+                
+                var success = await JSRuntime.InvokeAsync<bool>(
+                    "quillInterop.initialize",
+                    EditorId,
+                    dotNetHelper,
+                    Placeholder
+                );
+
+                if (success)
+                {
+                    isInitialized = true;
+
+                    if (!string.IsNullOrEmpty(InitialContent))
+                    {
+                        await SetContentAsync(InitialContent);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Quill initialization error: {ex.Message}");
+            }
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnContentChanged(string htmlContent, string textContent, int wordCount)
+    {
+        await OnContentChange.InvokeAsync(htmlContent);
+        await OnWordCountChange.InvokeAsync(wordCount);
+    }
+
+    public async Task SetContentAsync(string htmlContent)
+    {
+        if (isInitialized)
+        {
+            await JSRuntime.InvokeVoidAsync("quillInterop.setContent", EditorId, htmlContent);
+        }
+    }
+
+    public async Task<string> GetContentAsync()
+    {
+        if (isInitialized)
+        {
+            return await JSRuntime.InvokeAsync<string>("quillInterop.getContent", EditorId);
+        }
+        return string.Empty;
+    }
+
+    public async Task FocusAsync()
+    {
+        if (isInitialized)
+        {
+            await JSRuntime.InvokeVoidAsync("quillInterop.focus", EditorId);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (isInitialized)
+        {
+            await JSRuntime.InvokeVoidAsync("quillInterop.dispose", EditorId);
+        }
+        dotNetHelper?.Dispose();
+    }
+}
