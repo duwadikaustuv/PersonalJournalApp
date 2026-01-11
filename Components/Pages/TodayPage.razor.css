@@ -45,10 +45,34 @@
 }
 
 .meta-panel {
+    background: var(--surface-color);
+    border-radius: 12px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    height: fit-content;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
 }
+
+    .meta-panel::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .meta-panel::-webkit-scrollbar-track {
+        background: var(--background-color);
+        border-radius: 3px;
+    }
+
+    .meta-panel::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 3px;
+    }
+
+        .meta-panel::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
 
 /* Meta Cards */
 .meta-card {

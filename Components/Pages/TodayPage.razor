@@ -1,16 +1,20 @@
 ﻿@page "/"
 @page "/today"
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
 @using PersonalJournalApp.Models.Input
 @using PersonalJournalApp.Services
 @using PersonalJournalApp.Auth
 @using PersonalJournalApp.Components.Shared
+@using PersonalJournalApp.Data
+@using PersonalJournalApp.Entities
 @inject AuthenticationStateProvider AuthStateProvider
 @inject CustomAuthStateProvider CustomAuthStateProvider
 @inject NavigationManager Navigation
 @inject JournalService JournalService
 @inject CategoryService CategoryService
 @inject TagService TagService
+@inject AppDbContext DbContext
 
 @if (!isAuthorized)
 {
@@ -269,6 +273,7 @@ else
     private int wordCount = 0;
     private int characterCount = 0;
     private DateTime? lastSaved;
+    private string? currentUserId;
 
     private JournalEntryInputModel entryModel = new();
     private List<PersonalJournalApp.Entities.Category> categories = new();
@@ -313,63 +318,134 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user.Identity?.IsAuthenticated != true)
-        {
-            Navigation.NavigateTo("/login");
-        }
-        else
-        {
-            isAuthorized = true;
-            await LoadDataAsync();
-        }
+        await LoadDataAsync();
     }
 
     private async Task LoadDataAsync()
     {
-        var userId = CustomAuthStateProvider.GetCurrentUserId();
-        if (string.IsNullOrEmpty(userId)) return;
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user?.Identity?.IsAuthenticated != true)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        var userIdClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        currentUserId = userIdClaim.Value;
+
+        // handle the case where the database was recreated but old userId is in Preferences
+        var userExists = await DbContext.Users.AnyAsync(u => u.Id == currentUserId);
+        if (!userExists)
+        {
+            // User doesn't exist in database - clear auth and redirect to login
+            await CustomAuthStateProvider.MarkUserAsLoggedOut();
+            Navigation.NavigateTo("/login");
+            return;
+        }
 
         // Load categories
-        var categoriesResult = await CategoryService.GetAllCategoriesAsync(userId);
+        var categoriesResult = await CategoryService.GetAllCategoriesAsync(currentUserId);
         if (categoriesResult.Success && categoriesResult.Data != null)
         {
             categories = categoriesResult.Data;
+
+            // Seed default categories if none exist
+            if (categories.Count == 0)
+            {
+                try
+                {
+                    var defaultCategories = new[] { "Personal", "Work", "Health", "Travel", "Goals" };
+                    foreach (var categoryName in defaultCategories)
+                    {
+                        await CategoryService.CreateCategoryAsync(currentUserId, new CategoryInputModel { Name = categoryName });
+                    }
+                    // Reload categories after seeding
+                    categoriesResult = await CategoryService.GetAllCategoriesAsync(currentUserId);
+                    if (categoriesResult.Success && categoriesResult.Data != null)
+                    {
+                        categories = categoriesResult.Data;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log or handle the error gracefully
+                    Console.WriteLine($"Failed to seed categories: {ex.Message}");
+                }
+            }
         }
 
         // Load tags and separate pre-built from custom
-        var tagsResult = await TagService.GetAllTagsAsync(userId);
+        var tagsResult = await TagService.GetAllTagsAsync(currentUserId);
         if (tagsResult.Success && tagsResult.Data != null)
         {
-            prebuiltTags = tagsResult.Data.Where(t => t.IsPrebuilt).OrderBy(t => t.Name).ToList();
-            customTags = tagsResult.Data.Where(t => !t.IsPrebuilt).OrderBy(t => t.Name).ToList();
+            var allTags = tagsResult.Data;
+
+            // Seed pre-built tags if none exist
+            if (!allTags.Any(t => t.IsPrebuilt))
+            {
+                try
+                {
+                    await TagSeeder.SeedTagsForUserAsync(DbContext, currentUserId);
+                    // Reload tags after seeding
+                    tagsResult = await TagService.GetAllTagsAsync(currentUserId);
+                    if (tagsResult.Success && tagsResult.Data != null)
+                    {
+                        allTags = tagsResult.Data;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log or handle the error gracefully
+                    Console.WriteLine($"Failed to seed tags: {ex.Message}");
+                }
+            }
+
+            prebuiltTags = allTags.Where(t => t.IsPrebuilt).OrderBy(t => t.Name).ToList();
+            customTags = allTags.Where(t => !t.IsPrebuilt).OrderBy(t => t.Name).ToList();
         }
 
-        // Load today's entry if exists
-        var today = DateTime.Today;
-        var entryResult = await JournalService.GetEntriesByDateRangeAsync(userId, today, today);
-        if (entryResult.Success && entryResult.Data != null && entryResult.Data.Any())
-        {
-            var todayEntry = entryResult.Data.First();
-            todayEntryId = todayEntry.Id;
+        // Load today's entry
+        await LoadTodaysEntryAsync();
 
-            entryModel.Title = todayEntry.Title;
-            entryModel.Content = todayEntry.Content;
-            entryModel.PrimaryMood = todayEntry.Mood; // Map old Mood field
-            entryModel.CategoryId = todayEntry.CategoryName != null ?
-                categories.FirstOrDefault(c => c.Name == todayEntry.CategoryName)?.Id : null;
-            entryModel.SelectedTagIds = prebuiltTags.Concat(customTags)
-                .Where(t => todayEntry.TagNames.Contains(t.Name))
-                .Select(t => t.Id)
-                .ToList();
+        isAuthorized = true;
+    }
 
-            // Load secondary moods if they exist in the entry
-        }
-        else
+    private async Task LoadTodaysEntryAsync()
+    {
+        if (string.IsNullOrEmpty(currentUserId)) return;
+
+        var today = DateTime.UtcNow.Date;
+        var result = await JournalService.GetEntriesByDateRangeAsync(currentUserId, today, today);
+
+        if (result.Success && result.Data != null && result.Data.Any())
         {
-            entryModel.PrimaryMood = "calm";
+            var todaysEntry = result.Data.First();
+            todayEntryId = todaysEntry.Id;
+            entryModel.Title = todaysEntry.Title;
+            entryModel.Content = todaysEntry.Content;
+            entryModel.PrimaryMood = todaysEntry.PrimaryMood;
+            entryModel.SecondaryMood1 = todaysEntry.SecondaryMood1;
+            entryModel.SecondaryMood2 = todaysEntry.SecondaryMood2;
+            entryModel.CategoryId = null;
+
+            // Populate secondary moods list
+            secondaryMoods.Clear();
+            if (!string.IsNullOrEmpty(todaysEntry.SecondaryMood1))
+                secondaryMoods.Add(todaysEntry.SecondaryMood1);
+            if (!string.IsNullOrEmpty(todaysEntry.SecondaryMood2))
+                secondaryMoods.Add(todaysEntry.SecondaryMood2);
+
+            // Calculate word count
+            wordCount = todaysEntry.WordCount;
+            characterCount = todaysEntry.Content.Length;
         }
     }
 
