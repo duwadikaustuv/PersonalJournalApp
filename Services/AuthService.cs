@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using PersonalJournalApp.Common;
 using PersonalJournalApp.Entities;
 using PersonalJournalApp.Models.Input;
+using PersonalJournalApp.Data;
 
 namespace PersonalJournalApp.Services
 {
@@ -15,15 +16,18 @@ namespace PersonalJournalApp.Services
         private readonly UserManager<User> _userManager;
         private readonly SettingsService _settingsService;
         private readonly CategoryService _categoryService;
+        private readonly AppDbContext _context;
 
         public AuthService(
             UserManager<User> userManager,
             SettingsService settingsService,
-            CategoryService categoryService)
+            CategoryService categoryService,
+            AppDbContext context)
         {
             _userManager = userManager;
             _settingsService = settingsService;
             _categoryService = categoryService;
+            _context = context;
         }
 
         // Register new user
@@ -55,6 +59,9 @@ namespace PersonalJournalApp.Services
                 {
                     await _categoryService.CreateCategoryAsync(user.Id, new CategoryInputModel { Name = categoryName });
                 }
+
+                // Seed pre-built tags for new user
+                await TagSeeder.SeedTagsForUserAsync(_context, user.Id);
 
                 return ServiceResult.SuccessResult();
             }

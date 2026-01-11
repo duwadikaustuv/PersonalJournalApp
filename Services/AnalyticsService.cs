@@ -46,7 +46,7 @@ namespace PersonalJournalApp.Services
                 };
 
                 // Mood distribution
-                var moodGroups = entries.GroupBy(e => e.Mood)
+                var moodGroups = entries.GroupBy(e => e.PrimaryMood)
                     .Select(g => new { Mood = g.Key, Count = g.Count() })
                     .ToList();
 

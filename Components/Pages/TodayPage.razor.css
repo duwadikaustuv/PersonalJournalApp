@@ -318,6 +318,99 @@
         right: 30px;
     }
 
+/* Mood Categories */
+.mood-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mood-category-section {
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 12px;
+}
+
+    .mood-category-section:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+.mood-category-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+}
+
+/* Secondary Moods */
+.secondary-moods-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.mood-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+    .mood-checkbox:hover {
+        background: #f3f4f6;
+    }
+
+    .mood-checkbox input[type="checkbox"]:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+.mood-checkbox-label {
+    font-size: 0.8125rem;
+    color: #374151;
+}
+
+/* Tags Sections */
+.tags-section {
+    margin-bottom: 16px;
+}
+
+    .tags-section:last-child {
+        margin-bottom: 0;
+    }
+
+.tags-section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+}
+
+/* Delete Button */
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    border: none;
+}
+
+    .btn-danger:hover {
+        background: #dc2626;
+    }
+
+    .btn-danger:disabled {
+        background: #fca5a5;
+        cursor: not-allowed;
+    }
+
 @media (max-width: 1024px) {
     .editor-layout {
         grid-template-columns: 1fr;

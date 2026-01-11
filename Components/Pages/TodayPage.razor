@@ -35,6 +35,16 @@ else
                     </p>
                 </div>
                 <div class="header-actions">
+                    @if (todayEntryId.HasValue)
+                    {
+                        <button class="btn btn-danger" @onclick="DeleteEntry">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            Delete
+                        </button>
+                    }
                     <button class="btn btn-primary" @onclick="SaveEntry" disabled="@isSaving">
                         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
@@ -52,7 +62,7 @@ else
             {
                 <!-- Left: Meta Panel -->
                 <aside class="meta-panel">
-                    <!-- Mood Selection -->
+                    <!-- Primary Mood Selection -->
                     <div class="meta-card">
                         <div class="meta-header">
                             <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -61,59 +71,57 @@ else
                                 <line x1="9" y1="9" x2="9.01" y2="9"></line>
                                 <line x1="15" y1="9" x2="15.01" y2="9"></line>
                             </svg>
-                            <span>How are you feeling?</span>
+                            <span>Primary Mood (Required)</span>
                         </div>
-                        <div class="mood-grid">
-                            @foreach (var mood in moods)
+                        <div class="mood-categories">
+                            @foreach (var category in moodsByCategory)
                             {
-                                <button class="mood-btn @(entryModel.Mood == mood.Value ? "active" : "")"
-                                        @onclick="() => entryModel.Mood = mood.Value">
-                                    <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        @if (mood.Value == "happy")
+                                <div class="mood-category-section">
+                                    <div class="mood-category-label">@category.Key</div>
+                                    <div class="mood-grid">
+                                        @foreach (var mood in category.Value)
                                         {
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                            <button class="mood-btn @(entryModel.PrimaryMood == mood.Value ? "active" : "")"
+                                                    @onclick="() => entryModel.PrimaryMood = mood.Value">
+                                                <svg class="mood-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    @((MarkupString)GetMoodIconPath(mood.Value))
+                                                </svg>
+                                                <span class="mood-label">@mood.Label</span>
+                                            </button>
                                         }
-                                        else if (mood.Value == "sad")
-                                        {
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
-                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                                        }
-                                        else if (mood.Value == "calm")
-                                        {
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="8" y1="15" x2="16" y2="15"></line>
-                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                                        }
-                                        else if (mood.Value == "anxious")
-                                        {
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <path d="M8 15h8"></path>
-                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                                        }
-                                        else if (mood.Value == "excited")
-                                        {
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                            <circle cx="9" cy="9" r="1"></circle>
-                                            <circle cx="15" cy="9" r="1"></circle>
-                                        }
-                                        else if (mood.Value == "tired")
-                                        {
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="8" y1="15" x2="16" y2="15"></line>
-                                            <line x1="7" y1="9" x2="11" y2="9"></line>
-                                            <line x1="13" y1="9" x2="17" y2="9"></line>
-                                        }
-                                    </svg>
-                                    <span class="mood-label">@mood.Label</span>
-                                </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Secondary Moods Selection -->
+                    <div class="meta-card">
+                        <div class="meta-header">
+                            <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="8" y1="15" x2="16" y2="15"></line>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <span>Secondary Moods (Optional - up to 2)</span>
+                        </div>
+                        <div class="secondary-moods-list">
+                            @foreach (var category in moodsByCategory)
+                            {
+                                @foreach (var mood in category.Value)
+                                {
+                                    @if (mood.Value != entryModel.PrimaryMood)
+                                    {
+                                        <label class="mood-checkbox">
+                                            <input type="checkbox"
+                                                   checked="@(secondaryMoods.Contains(mood.Value))"
+                                                   @onchange="e => ToggleSecondaryMood(mood.Value, (bool)e.Value!)"
+                                                   disabled="@(secondaryMoods.Count >= 2 && !secondaryMoods.Contains(mood.Value))" />
+                                            <span class="mood-checkbox-label">@mood.Label</span>
+                                        </label>
+                                    }
+                                }
                             }
                         </div>
                     </div>
@@ -144,17 +152,41 @@ else
                             </svg>
                             <span>Tags</span>
                         </div>
-                        <div class="tags-list">
-                            @foreach (var tag in tags)
-                            {
-                                <label class="tag-checkbox">
-                                    <input type="checkbox"
-                                           checked="@entryModel.SelectedTagIds.Contains(tag.Id)"
-                                           @onchange="e => ToggleTag(tag.Id, (bool)e.Value!)" />
-                                    <span class="tag-label">@tag.Name</span>
-                                </label>
-                            }
+
+                        <!-- Pre-built Tags -->
+                        <div class="tags-section">
+                            <div class="tags-section-label">Pre-built Tags</div>
+                            <div class="tags-list">
+                                @foreach (var tag in prebuiltTags)
+                                {
+                                    <label class="tag-checkbox">
+                                        <input type="checkbox"
+                                               checked="@entryModel.SelectedTagIds.Contains(tag.Id)"
+                                               @onchange="e => ToggleTag(tag.Id, (bool)e.Value!)" />
+                                        <span class="tag-label">@tag.Name</span>
+                                    </label>
+                                }
+                            </div>
                         </div>
+
+                        <!-- Custom Tags -->
+                        @if (customTags.Any())
+                        {
+                            <div class="tags-section">
+                                <div class="tags-section-label">Custom Tags</div>
+                                <div class="tags-list">
+                                    @foreach (var tag in customTags)
+                                    {
+                                        <label class="tag-checkbox">
+                                            <input type="checkbox"
+                                                   checked="@entryModel.SelectedTagIds.Contains(tag.Id)"
+                                                   @onchange="e => ToggleTag(tag.Id, (bool)e.Value!)" />
+                                            <span class="tag-label">@tag.Name</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        }
                     </div>
                 </aside>
             }
@@ -178,7 +210,7 @@ else
                     <div class="editor-header">
                         <input type="text"
                                class="entry-title"
-                               placeholder="Entry title..."
+                               placeholder="Entry title (optional)..."
                                @bind="entryModel.Title"
                                @bind:event="oninput" />
                     </div>
@@ -240,17 +272,43 @@ else
 
     private JournalEntryInputModel entryModel = new();
     private List<PersonalJournalApp.Entities.Category> categories = new();
-    private List<PersonalJournalApp.Entities.Tag> tags = new();
+    private List<PersonalJournalApp.Entities.Tag> prebuiltTags = new();
+    private List<PersonalJournalApp.Entities.Tag> customTags = new();
+    private List<string> secondaryMoods = new();
     private int? todayEntryId = null;
 
-    private List<(string Value, string Label)> moods = new()
+    private Dictionary<string, List<(string Value, string Label)>> moodsByCategory = new()
     {
-        ("happy", "Happy"),
-        ("sad", "Sad"),
-        ("calm", "Calm"),
-        ("anxious", "Anxious"),
-        ("excited", "Excited"),
-        ("tired", "Tired")
+        {
+            "Positive", new List<(string, string)>
+            {
+                ("happy", "Happy"),
+                ("excited", "Excited"),
+                ("relaxed", "Relaxed"),
+                ("grateful", "Grateful"),
+                ("confident", "Confident")
+            }
+        },
+        {
+            "Neutral", new List<(string, string)>
+            {
+                ("calm", "Calm"),
+                ("thoughtful", "Thoughtful"),
+                ("curious", "Curious"),
+                ("nostalgic", "Nostalgic"),
+                ("bored", "Bored")
+            }
+        },
+        {
+            "Negative", new List<(string, string)>
+            {
+                ("sad", "Sad"),
+                ("angry", "Angry"),
+                ("stressed", "Stressed"),
+                ("lonely", "Lonely"),
+                ("anxious", "Anxious")
+            }
+        }
     };
 
     protected override async Task OnInitializedAsync()
@@ -274,17 +332,19 @@ else
         var userId = CustomAuthStateProvider.GetCurrentUserId();
         if (string.IsNullOrEmpty(userId)) return;
 
-        // Load categories and tags
+        // Load categories
         var categoriesResult = await CategoryService.GetAllCategoriesAsync(userId);
         if (categoriesResult.Success && categoriesResult.Data != null)
         {
             categories = categoriesResult.Data;
         }
 
+        // Load tags and separate pre-built from custom
         var tagsResult = await TagService.GetAllTagsAsync(userId);
         if (tagsResult.Success && tagsResult.Data != null)
         {
-            tags = tagsResult.Data;
+            prebuiltTags = tagsResult.Data.Where(t => t.IsPrebuilt).OrderBy(t => t.Name).ToList();
+            customTags = tagsResult.Data.Where(t => !t.IsPrebuilt).OrderBy(t => t.Name).ToList();
         }
 
         // Load today's entry if exists
@@ -297,17 +357,19 @@ else
 
             entryModel.Title = todayEntry.Title;
             entryModel.Content = todayEntry.Content;
-            entryModel.Mood = todayEntry.Mood;
+            entryModel.PrimaryMood = todayEntry.Mood; // Map old Mood field
             entryModel.CategoryId = todayEntry.CategoryName != null ?
                 categories.FirstOrDefault(c => c.Name == todayEntry.CategoryName)?.Id : null;
-            entryModel.SelectedTagIds = tags
+            entryModel.SelectedTagIds = prebuiltTags.Concat(customTags)
                 .Where(t => todayEntry.TagNames.Contains(t.Name))
                 .Select(t => t.Id)
                 .ToList();
+
+            // Load secondary moods if they exist in the entry
         }
         else
         {
-            entryModel.Mood = "calm";
+            entryModel.PrimaryMood = "calm";
         }
     }
 
@@ -340,14 +402,27 @@ else
         }
     }
 
-    private async Task SaveEntry()
+    private void ToggleSecondaryMood(string moodValue, bool isChecked)
     {
-        if (string.IsNullOrWhiteSpace(entryModel.Title))
+        if (isChecked)
         {
-            await Application.Current!.MainPage!.DisplayAlert("Validation Error", "Please enter a title for your entry.", "OK");
-            return;
+            if (secondaryMoods.Count < 2 && !secondaryMoods.Contains(moodValue))
+            {
+                secondaryMoods.Add(moodValue);
+            }
+        }
+        else
+        {
+            secondaryMoods.Remove(moodValue);
         }
 
+        // Update model
+        entryModel.SecondaryMood1 = secondaryMoods.Count > 0 ? secondaryMoods[0] : null;
+        entryModel.SecondaryMood2 = secondaryMoods.Count > 1 ? secondaryMoods[1] : null;
+    }
+
+    private async Task SaveEntry()
+    {
         if (string.IsNullOrWhiteSpace(entryModel.Content))
         {
             await Application.Current!.MainPage!.DisplayAlert("Validation Error", "Please write some content for your entry.", "OK");
@@ -395,5 +470,53 @@ else
         {
             isSaving = false;
         }
+    }
+
+    private async Task DeleteEntry()
+    {
+        if (!todayEntryId.HasValue) return;
+
+        bool confirmed = await Application.Current!.MainPage!.DisplayAlert(
+            "Confirm Delete",
+            "Are you sure you want to delete today's entry? This action cannot be undone.",
+            "Delete",
+            "Cancel"
+        );
+
+        if (!confirmed) return;
+
+        var userId = CustomAuthStateProvider.GetCurrentUserId();
+        var result = await JournalService.DeleteEntryAsync(userId!, todayEntryId.Value);
+
+        if (result.Success)
+        {
+            await Application.Current!.MainPage!.DisplayAlert("Success", "Entry deleted successfully.", "OK");
+
+            // Clear the form
+            todayEntryId = null;
+            entryModel = new() { PrimaryMood = "calm" };
+            secondaryMoods.Clear();
+            wordCount = 0;
+            characterCount = 0;
+            lastSaved = null;
+        }
+        else
+        {
+            await Application.Current!.MainPage!.DisplayAlert("Error", result.ErrorMessage ?? "Failed to delete entry.", "OK");
+        }
+    }
+
+    private string GetMoodIconPath(string moodValue)
+    {
+        return moodValue switch
+        {
+            "happy" => @"<circle cx=""12"" cy=""12"" r=""10""></circle><path d=""M8 14s1.5 2 4 2 4-2 4-2""></path><line x1=""9"" y1=""9"" x2=""9.01"" y2=""9""></line><line x1=""15"" y1=""9"" x2=""15.01"" y2=""9""></line>",
+            "sad" => @"<circle cx=""12"" cy=""12"" r=""10""></circle><path d=""M16 16s-1.5-2-4-2-4 2-4 2""></path><line x1=""9"" y1=""9"" x2=""9.01"" y2=""9""></line><line x1=""15"" y1=""9"" x2=""15.01"" y2=""9""></line>",
+            "calm" => @"<circle cx=""12"" cy=""12"" r=""10""></circle><line x1=""8"" y1=""15"" x2=""16"" y2=""15""></line><line x1=""9"" y1=""9"" x2=""9.01"" y2=""9""></line><line x1=""15"" y1=""9"" x2=""15.01"" y2=""9""></line>",
+            "anxious" => @"<circle cx=""12"" cy=""12"" r=""10""></circle><path d=""M8 15h8""></path><line x1=""9"" y1=""9"" x2=""9.01"" y2=""9""></line><line x1=""15"" y1=""9"" x2=""15.01"" y2=""9""></line>",
+            "excited" => @"<circle cx=""12"" cy=""12"" r=""10""></circle><path d=""M8 14s1.5 2 4 2 4-2 4-2""></path><circle cx=""9"" cy=""9"" r=""1""></circle><circle cx=""15"" cy=""9"" r=""1""></circle>",
+            "stressed" => @"<circle cx=""12"" cy=""12"" r=""10""></circle><line x1=""8"" y1=""15"" x2=""16"" y2=""15""></line><line x1=""7"" y1=""9"" x2=""11"" y2=""9""></line><line x1=""13"" y1=""9"" x2=""17"" y2=""9""></line>",
+            _ => @"<circle cx=""12"" cy=""12"" r=""10""></circle><line x1=""8"" y1=""15"" x2=""16"" y2=""15""></line><line x1=""9"" y1=""9"" x2=""9.01"" y2=""9""></line><line x1=""15"" y1=""9"" x2=""15.01"" y2=""9""></line>"
+        };
     }
 }

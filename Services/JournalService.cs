@@ -30,7 +30,9 @@ namespace PersonalJournalApp.Services
                 {
                     Title = model.Title,
                     Content = model.Content,
-                    Mood = model.Mood,
+                    PrimaryMood = model.PrimaryMood,
+                    SecondaryMood1 = model.SecondaryMood1,
+                    SecondaryMood2 = model.SecondaryMood2,
                     UserId = userId,
                     CategoryId = model.CategoryId,
                     CreatedDate = DateTime.UtcNow
@@ -72,7 +74,9 @@ namespace PersonalJournalApp.Services
 
                 entry.Title = model.Title;
                 entry.Content = model.Content;
-                entry.Mood = model.Mood;
+                entry.PrimaryMood = model.PrimaryMood;
+                entry.SecondaryMood1 = model.SecondaryMood1;
+                entry.SecondaryMood2 = model.SecondaryMood2;
                 entry.CategoryId = model.CategoryId;
                 entry.ModifiedDate = DateTime.UtcNow;
 
@@ -210,7 +214,7 @@ namespace PersonalJournalApp.Services
                 var entries = await _context.JournalEntries
                     .Include(e => e.Category)
                     .Include(e => e.Tags)
-                    .Where(e => e.UserId == userId && e.Mood == mood)
+                    .Where(e => e.UserId == userId && e.PrimaryMood == mood)
                     .OrderByDescending(e => e.CreatedDate)
                     .ToListAsync();
 
@@ -273,7 +277,9 @@ namespace PersonalJournalApp.Services
                 Id = entry.Id,
                 Title = entry.Title,
                 Content = entry.Content,
-                Mood = entry.Mood,
+                PrimaryMood = entry.PrimaryMood,
+                SecondaryMood1 = entry.SecondaryMood1,
+                SecondaryMood2 = entry.SecondaryMood2,
                 CreatedDate = entry.CreatedDate,
                 ModifiedDate = entry.ModifiedDate,
                 CategoryName = entry.Category?.Name,

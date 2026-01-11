@@ -11,7 +11,14 @@ namespace PersonalJournalApp.Entities
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
-        public string Mood { get; set; } = "calm"; // happy, sad, calm, anxious, excited, tired
+
+        // Primary Mood (Required)
+        public string PrimaryMood { get; set; } = "calm";
+
+        // Secondary Moods (Optional - up to 2)
+        public string? SecondaryMood1 { get; set; }
+        public string? SecondaryMood2 { get; set; }
+
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime? ModifiedDate { get; set; }
 

@@ -10,6 +10,7 @@ namespace PersonalJournalApp.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public bool IsPrebuilt { get; set; } = false; // Prebuilt or User-Created
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Foreign key
