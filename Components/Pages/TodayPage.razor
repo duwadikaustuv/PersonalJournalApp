@@ -434,7 +434,18 @@ else
             entryModel.PrimaryMood = todaysEntry.PrimaryMood;
             entryModel.SecondaryMood1 = todaysEntry.SecondaryMood1;
             entryModel.SecondaryMood2 = todaysEntry.SecondaryMood2;
-            entryModel.CategoryId = null;
+
+            // Load the category ID if exists
+            var fullEntry = await DbContext.JournalEntries
+                .Include(e => e.Category)
+                .Include(e => e.Tags)
+                .FirstOrDefaultAsync(e => e.Id == todaysEntry.Id);
+
+            if (fullEntry != null)
+            {
+                entryModel.CategoryId = fullEntry.CategoryId;
+                entryModel.SelectedTagIds = fullEntry.Tags.Select(t => t.Id).ToList();
+            }
 
             // Populate secondary moods list
             secondaryMoods.Clear();
@@ -447,6 +458,17 @@ else
             wordCount = todaysEntry.WordCount;
             characterCount = todaysEntry.Content.Length;
         }
+        else
+        {
+            // No entry for today - initialize with default values
+            entryModel = new JournalEntryInputModel { PrimaryMood = "calm" };
+            secondaryMoods.Clear();
+            todayEntryId = null;
+            wordCount = 0;
+            characterCount = 0;
+        }
+
+        isAuthorized = true;
     }
 
     private void ToggleFullscreen()
