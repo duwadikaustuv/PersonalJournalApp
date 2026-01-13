@@ -422,8 +422,11 @@ else
     {
         if (string.IsNullOrEmpty(currentUserId)) return;
 
-        var today = DateTime.UtcNow.Date;
-        var result = await JournalService.GetEntriesByDateRangeAsync(currentUserId, today, today);
+        // Use UTC date range for the entire day
+        var todayStart = DateTime.UtcNow.Date;
+        var todayEnd = todayStart.AddDays(1).AddTicks(-1); // End of day
+
+        var result = await JournalService.GetEntriesByDateRangeAsync(currentUserId, todayStart, todayEnd);
 
         if (result.Success && result.Data != null && result.Data.Any())
         {

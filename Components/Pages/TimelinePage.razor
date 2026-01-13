@@ -1,7 +1,17 @@
 @page "/timeline"
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+@using PersonalJournalApp.Models.Display
+@using PersonalJournalApp.Services
+@using PersonalJournalApp.Auth
+@using PersonalJournalApp.Data
 @inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthStateProvider CustomAuthStateProvider
 @inject NavigationManager Navigation
+@inject JournalService JournalService
+@inject TagService TagService
+@inject CategoryService CategoryService
+@inject AppDbContext DbContext
 
 @if (!isAuthorized)
 {
@@ -9,7 +19,6 @@
 }
 else
 {
-
     <div class="page-content">
         <div class="page-header">
             <div class="header-left">
@@ -17,288 +26,563 @@ else
                 <p class="page-subtitle">Browse all your journal entries</p>
             </div>
             <div class="header-actions">
-                <button class="btn btn-secondary">Filter</button>
-                <button class="btn btn-primary">+ New Entry</button>
+                <button class="btn btn-secondary" @onclick="ToggleFilters">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    @(showFilters ? "Hide Filters" : "Show Filters")
+                </button>
+                <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("/today")'>
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Entry
+                </button>
             </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input type="text"
+                   class="search-input"
+                   placeholder="Search by title or content..."
+                   @bind="searchQuery"
+                   @bind:event="oninput"
+                   @onkeyup="OnSearchChanged" />
+            @if (!string.IsNullOrEmpty(searchQuery))
+            {
+                <button class="clear-search-btn" @onclick="ClearSearch">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            }
         </div>
 
         <!-- Filter Bar -->
-        <div class="filter-bar">
-            <div class="filter-group">
-                <label class="filter-label">Sort by</label>
-                <select class="filter-select">
-                    <option>Newest First</option>
-                    <option>Oldest First</option>
-                    <option>Most Words</option>
-                </select>
+        @if (showFilters)
+        {
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <div class="date-range-inputs">
+                        <input type="date" class="filter-input" @bind="filterStartDate" @bind:event="oninput" @onchange="ApplyFilters" />
+                        <span class="date-separator">to</span>
+                        <input type="date" class="filter-input" @bind="filterEndDate" @bind:event="oninput" @onchange="ApplyFilters" />
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Mood</label>
+                    <select class="filter-select" @bind="filterMood" @bind:event="oninput" @onchange="ApplyFilters">
+                        <option value="">All Moods</option>
+                        <optgroup label="Positive">
+                            <option value="happy">Happy</option>
+                            <option value="excited">Excited</option>
+                            <option value="relaxed">Relaxed</option>
+                            <option value="grateful">Grateful</option>
+                            <option value="confident">Confident</option>
+                        </optgroup>
+                        <optgroup label="Neutral">
+                            <option value="calm">Calm</option>
+                            <option value="thoughtful">Thoughtful</option>
+                            <option value="curious">Curious</option>
+                            <option value="nostalgic">Nostalgic</option>
+                            <option value="bored">Bored</option>
+                        </optgroup>
+                        <optgroup label="Negative">
+                            <option value="sad">Sad</option>
+                            <option value="angry">Angry</option>
+                            <option value="stressed">Stressed</option>
+                            <option value="lonely">Lonely</option>
+                            <option value="anxious">Anxious</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Tag</label>
+                    <select class="filter-select" @bind="filterTag" @bind:event="oninput" @onchange="ApplyFilters">
+                        <option value="">All Tags</option>
+                        @foreach (var tag in availableTags)
+                        {
+                            <option value="@tag.Id">@tag.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-select" @bind="filterCategory" @bind:event="oninput" @onchange="ApplyFilters">
+                        <option value="">All Categories</option>
+                        @foreach (var category in availableCategories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sort</label>
+                    <select class="filter-select" @bind="sortOrder" @bind:event="oninput" @onchange="ApplyFilters">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="words-desc">Most Words</option>
+                        <option value="words-asc">Least Words</option>
+                    </select>
+                </div>
+                <button class="clear-filters-btn" @onclick="ClearFilters">Clear All</button>
             </div>
-            <div class="filter-group">
-                <label class="filter-label">Mood</label>
-                <select class="filter-select">
-                    <option>All Moods</option>
-                    <option>Happy</option>
-                    <option>Calm</option>
-                    <option>Sad</option>
-                    <option>Anxious</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label">Tags</label>
-                <select class="filter-select">
-                    <option>All Tags</option>
-                    <option>Work</option>
-                    <option>Health</option>
-                    <option>Personal</option>
-                </select>
-            </div>
-            <button class="clear-filters-btn">Clear All</button>
-        </div>
+        }
 
-        <!-- Entries List -->
-        <div class="timeline-content">
-            <div class="timeline-header">
-                <span class="results-count">Showing 21 entries</span>
+        <!-- Loading State -->
+        @if (isLoading)
+        {
+            <div class="loading-state">
+                <p>Loading entries...</p>
             </div>
+        }
+        else if (filteredEntries.Count == 0)
+        {
+            <!-- Empty State -->
+            <div class="empty-state">
+                <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <h3>No Entries Found</h3>
+                <p>@(string.IsNullOrEmpty(searchQuery) ? "You haven't written any journal entries yet." : "No entries match your search criteria.")</p>
+                <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("/today")'>Create Your First Entry</button>
+            </div>
+        }
+        else
+        {
+            <!-- Entries List -->
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <span class="results-count">Showing @filteredEntries.Count @(filteredEntries.Count == 1 ? "entry" : "entries")</span>
+                </div>
 
-            <div class="entries-list">
-                <!-- Entry Card 1 -->
-                <div class="entry-card">
-                    <div class="entry-header">
-                        <div class="entry-date">
-                            <span class="date-day">21</span>
-                            <span class="date-month">Dec</span>
-                        </div>
-                        <div class="entry-info">
-                            <h3 class="entry-title">A Productive Saturday</h3>
-                            <div class="entry-meta">
-                                <span class="meta-item">Saturday, December 21, 2025</span>
-                                <span class="meta-dot">•</span>
-                                <span class="meta-item">10:42 PM</span>
+                <div class="entries-list">
+                    @foreach (var entry in paginatedEntries)
+                    {
+                        <div class="entry-card">
+                            <div class="entry-header">
+                                <div class="entry-date">
+                                    <span class="date-day">@entry.CreatedDate.ToLocalTime().Day</span>
+                                    <span class="date-month">@entry.CreatedDate.ToLocalTime().ToString("MMM")</span>
+                                </div>
+                                <div class="entry-info">
+                                    <h3 class="entry-title">@(string.IsNullOrEmpty(entry.Title) ? "Untitled Entry" : entry.Title)</h3>
+                                    <div class="entry-meta">
+                                        <span class="meta-item">@entry.FormattedCreatedDate</span>
+                                        <span class="meta-dot">•</span>
+                                        <span class="meta-item">@entry.FormattedTime</span>
+                                        @if (entry.IsModified)
+                                        {
+                                            <span class="meta-dot">•</span>
+                                            <span class="meta-item modified">Modified</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="entry-mood">
+                                    <span class="mood-badge">@FormatMoodName(entry.PrimaryMood)</span>
+                                    @if (!string.IsNullOrEmpty(entry.SecondaryMood1))
+                                    {
+                                        <span class="mood-badge mood-secondary">+@FormatMoodName(entry.SecondaryMood1)</span>
+                                    }
+                                    @if (!string.IsNullOrEmpty(entry.SecondaryMood2))
+                                    {
+                                        <span class="mood-badge mood-secondary">+@FormatMoodName(entry.SecondaryMood2)</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="entry-content">
+                                <p class="entry-excerpt">@StripHtml(entry.PreviewContent)</p>
+                            </div>
+                            <div class="entry-footer">
+                                <div class="entry-tags">
+                                    @if (!string.IsNullOrEmpty(entry.CategoryName))
+                                    {
+                                        <span class="tag tag-category">@entry.CategoryName</span>
+                                    }
+                                    @foreach (var tagName in entry.TagNames.Take(3))
+                                    {
+                                        <span class="tag">@tagName</span>
+                                    }
+                                    @if (entry.TagNames.Count > 3)
+                                    {
+                                        <span class="tag tag-more">+@(entry.TagNames.Count - 3)</span>
+                                    }
+                                </div>
+                                <div class="entry-stats">
+                                    <span class="stat">@entry.WordCount words</span>
+                                </div>
+                            </div>
+                            <div class="entry-actions">
+                                <button class="action-btn" @onclick="() => ViewEntry(entry.Id)">
+                                    <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    View
+                                </button>
+                                @if (IsToday(entry.CreatedDate))
+                                {
+                                    <button class="action-btn" @onclick='() => Navigation.NavigateTo("/today")'>
+                                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <button class="action-btn danger" @onclick="() => DeleteEntry(entry.Id)">
+                                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                        Delete
+                                    </button>
+                                }
                             </div>
                         </div>
-                        <div class="entry-mood">
-                            <span class="mood-badge">Happy</span>
-                        </div>
-                    </div>
-                    <div class="entry-content">
-                        <p class="entry-excerpt">
-                            Today was a productive day! I managed to complete most of my tasks and even had time for a walk in the park.
-                            Feeling grateful for good health, supportive friends, and progress on my goals...
-                        </p>
-                    </div>
-                    <div class="entry-footer">
-                        <div class="entry-tags">
-                            <span class="tag">Work</span>
-                            <span class="tag">Health</span>
-                            <span class="tag">Personal</span>
-                        </div>
-                        <div class="entry-stats">
-                            <span class="stat">87 words</span>
-                        </div>
-                    </div>
-                    <div class="entry-actions">
-                        <button class="action-btn">View</button>
-                        <button class="action-btn">Edit</button>
-                        <button class="action-btn danger">Delete</button>
-                    </div>
+                    }
                 </div>
 
-                <!-- Entry Card 2 -->
-                <div class="entry-card">
-                    <div class="entry-header">
-                        <div class="entry-date">
-                            <span class="date-day">20</span>
-                            <span class="date-month">Dec</span>
+                <!-- Pagination -->
+                @if (totalPages > 1)
+                {
+                    <div class="pagination">
+                        <button class="pagination-btn" @onclick="PreviousPage" disabled="@(currentPage == 1)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                            Previous
+                        </button>
+                        <div class="pagination-pages">
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                var pageNum = i;
+                                @if (i == 1 || i == totalPages || (i >= currentPage - 1 && i <= currentPage + 1))
+                                {
+                                    <button class="page-btn @(currentPage == i ? "active" : "")" @onclick="() => GoToPage(pageNum)">@i</button>
+                                }
+                                else if (i == currentPage - 2 || i == currentPage + 2)
+                                {
+                                    <span class="pagination-dots">...</span>
+                                }
+                            }
                         </div>
-                        <div class="entry-info">
-                            <h3 class="entry-title">Friday Reflections</h3>
-                            <div class="entry-meta">
-                                <span class="meta-item">Friday, December 20, 2025</span>
-                                <span class="meta-dot">•</span>
-                                <span class="meta-item">9:15 PM</span>
-                            </div>
-                        </div>
-                        <div class="entry-mood">
-                            <span class="mood-badge mood-calm">Calm</span>
-                        </div>
+                        <button class="pagination-btn" @onclick="NextPage" disabled="@(currentPage == totalPages)">
+                            Next
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="entry-content">
-                        <p class="entry-excerpt">
-                            Ending the work week with a sense of peace. Had a great team meeting today and received positive feedback on the project.
-                            Looking forward to a relaxing weekend ahead...
-                        </p>
-                    </div>
-                    <div class="entry-footer">
-                        <div class="entry-tags">
-                            <span class="tag">Work</span>
-                            <span class="tag">Goals</span>
-                        </div>
-                        <div class="entry-stats">
-                            <span class="stat">124 words</span>
-                        </div>
-                    </div>
-                    <div class="entry-actions">
-                        <button class="action-btn">View</button>
-                        <button class="action-btn">Edit</button>
-                        <button class="action-btn danger">Delete</button>
-                    </div>
-                </div>
-
-                <!-- Entry Card 3 -->
-                <div class="entry-card">
-                    <div class="entry-header">
-                        <div class="entry-date">
-                            <span class="date-day">19</span>
-                            <span class="date-month">Dec</span>
-                        </div>
-                        <div class="entry-info">
-                            <h3 class="entry-title">Midweek Check-in</h3>
-                            <div class="entry-meta">
-                                <span class="meta-item">Thursday, December 19, 2025</span>
-                                <span class="meta-dot">•</span>
-                                <span class="meta-item">8:30 PM</span>
-                            </div>
-                        </div>
-                        <div class="entry-mood">
-                            <span class="mood-badge">Happy</span>
-                        </div>
-                    </div>
-                    <div class="entry-content">
-                        <p class="entry-excerpt">
-                            Made significant progress on my personal goals today. Started a new book and went for an evening jog.
-                            Feeling energized and motivated to keep this momentum going...
-                        </p>
-                    </div>
-                    <div class="entry-footer">
-                        <div class="entry-tags">
-                            <span class="tag">Health</span>
-                            <span class="tag">Personal</span>
-                            <span class="tag">Goals</span>
-                        </div>
-                        <div class="entry-stats">
-                            <span class="stat">156 words</span>
-                        </div>
-                    </div>
-                    <div class="entry-actions">
-                        <button class="action-btn">View</button>
-                        <button class="action-btn">Edit</button>
-                        <button class="action-btn danger">Delete</button>
-                    </div>
-                </div>
-
-                <!-- Entry Card 4 -->
-                <div class="entry-card">
-                    <div class="entry-header">
-                        <div class="entry-date">
-                            <span class="date-day">18</span>
-                            <span class="date-month">Dec</span>
-                        </div>
-                        <div class="entry-info">
-                            <h3 class="entry-title">Wednesday Wellness</h3>
-                            <div class="entry-meta">
-                                <span class="meta-item">Wednesday, December 18, 2025</span>
-                                <span class="meta-dot">•</span>
-                                <span class="meta-item">7:45 PM</span>
-                            </div>
-                        </div>
-                        <div class="entry-mood">
-                            <span class="mood-badge mood-calm">Calm</span>
-                        </div>
-                    </div>
-                    <div class="entry-content">
-                        <p class="entry-excerpt">
-                            Took some time for self-care today. Did a yoga session in the morning and cooked a healthy dinner.
-                            These small habits are making a big difference in my overall wellbeing...
-                        </p>
-                    </div>
-                    <div class="entry-footer">
-                        <div class="entry-tags">
-                            <span class="tag">Health</span>
-                            <span class="tag">Personal</span>
-                        </div>
-                        <div class="entry-stats">
-                            <span class="stat">98 words</span>
-                        </div>
-                    </div>
-                    <div class="entry-actions">
-                        <button class="action-btn">View</button>
-                        <button class="action-btn">Edit</button>
-                        <button class="action-btn danger">Delete</button>
-                    </div>
-                </div>
-
-                <!-- Entry Card 5 -->
-                <div class="entry-card">
-                    <div class="entry-header">
-                        <div class="entry-date">
-                            <span class="date-day">17</span>
-                            <span class="date-month">Dec</span>
-                        </div>
-                        <div class="entry-info">
-                            <h3 class="entry-title">Challenging Tuesday</h3>
-                            <div class="entry-meta">
-                                <span class="meta-item">Tuesday, December 17, 2025</span>
-                                <span class="meta-dot">•</span>
-                                <span class="meta-item">10:15 PM</span>
-                            </div>
-                        </div>
-                        <div class="entry-mood">
-                            <span class="mood-badge mood-anxious">Anxious</span>
-                        </div>
-                    </div>
-                    <div class="entry-content">
-                        <p class="entry-excerpt">
-                            Had a tough day at work with several unexpected challenges. Feeling a bit overwhelmed but trying to stay positive.
-                            Reminding myself that difficult days are temporary and tomorrow is a new opportunity...
-                        </p>
-                    </div>
-                    <div class="entry-footer">
-                        <div class="entry-tags">
-                            <span class="tag">Work</span>
-                        </div>
-                        <div class="entry-stats">
-                            <span class="stat">142 words</span>
-                        </div>
-                    </div>
-                    <div class="entry-actions">
-                        <button class="action-btn">View</button>
-                        <button class="action-btn">Edit</button>
-                        <button class="action-btn danger">Delete</button>
-                    </div>
-                </div>
+                }
             </div>
-
-            <!-- Pagination -->
-            <div class="pagination">
-                <button class="pagination-btn" disabled>‹ Previous</button>
-                <div class="pagination-pages">
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">3</button>
-                    <span class="pagination-dots">...</span>
-                    <button class="page-btn">8</button>
-                </div>
-                <button class="pagination-btn">Next ›</button>
-            </div>
-        </div>
+        }
     </div>
 }
 
 @code {
     private bool isAuthorized = false;
+    private bool isLoading = true;
+    private bool showFilters = false;
+    private string? currentUserId;
+
+    // All entries
+    private List<JournalEntryDisplayModel> allEntries = new();
+    private List<JournalEntryDisplayModel> filteredEntries = new();
+    private List<JournalEntryDisplayModel> paginatedEntries = new();
+
+    // Filter data
+    private List<PersonalJournalApp.Entities.Tag> availableTags = new();
+    private List<PersonalJournalApp.Entities.Category> availableCategories = new();
+
+    // Search and filters
+    private string searchQuery = string.Empty;
+    private DateTime? filterStartDate;
+    private DateTime? filterEndDate;
+    private string filterMood = string.Empty;
+    private string filterTag = string.Empty;
+    private string filterCategory = string.Empty;
+    private string sortOrder = "newest";
+
+    // Pagination
+    private int currentPage = 1;
+    private const int pageSize = 10;
+    private int totalPages = 0;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (user.Identity?.IsAuthenticated != true)
+        if (user?.Identity?.IsAuthenticated != true)
         {
             Navigation.NavigateTo("/login");
+            return;
+        }
+
+        var userIdClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        currentUserId = userIdClaim.Value;
+
+        // Verify user exists
+        var userExists = await DbContext.Users.AnyAsync(u => u.Id == currentUserId);
+        if (!userExists)
+        {
+            await CustomAuthStateProvider.MarkUserAsLoggedOut();
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        await LoadData();
+        isAuthorized = true;
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+
+        // Load all entries
+        var entriesResult = await JournalService.GetAllEntriesAsync(currentUserId!);
+        if (entriesResult.Success && entriesResult.Data != null)
+        {
+            allEntries = entriesResult.Data;
+        }
+
+        // Load tags for filter dropdown
+        var tagsResult = await TagService.GetAllTagsAsync(currentUserId!);
+        if (tagsResult.Success && tagsResult.Data != null)
+        {
+            availableTags = tagsResult.Data.OrderBy(t => t.Name).ToList();
+        }
+
+        // Load categories for filter dropdown
+        var categoriesResult = await CategoryService.GetAllCategoriesAsync(currentUserId!);
+        if (categoriesResult.Success && categoriesResult.Data != null)
+        {
+            availableCategories = categoriesResult.Data;
+        }
+
+        ApplyFilters();
+        isLoading = false;
+    }
+
+    private void ToggleFilters()
+    {
+        showFilters = !showFilters;
+    }
+
+    private void OnSearchChanged()
+    {
+        ApplyFilters();
+    }
+
+    private void ClearSearch()
+    {
+        searchQuery = string.Empty;
+        ApplyFilters();
+    }
+
+    private void ClearFilters()
+    {
+        searchQuery = string.Empty;
+        filterStartDate = null;
+        filterEndDate = null;
+        filterMood = string.Empty;
+        filterTag = string.Empty;
+        filterCategory = string.Empty;
+        sortOrder = "newest";
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        filteredEntries = allEntries.ToList();
+
+        // Search by title or content
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            var query = searchQuery.ToLower();
+            filteredEntries = filteredEntries.Where(e =>
+                e.Title.ToLower().Contains(query) ||
+                StripHtml(e.Content).ToLower().Contains(query)
+            ).ToList();
+        }
+
+        // Filter by date range
+        if (filterStartDate.HasValue)
+        {
+            filteredEntries = filteredEntries.Where(e => e.CreatedDate.Date >= filterStartDate.Value.Date).ToList();
+        }
+        if (filterEndDate.HasValue)
+        {
+            filteredEntries = filteredEntries.Where(e => e.CreatedDate.Date <= filterEndDate.Value.Date).ToList();
+        }
+
+        // Filter by mood
+        if (!string.IsNullOrWhiteSpace(filterMood))
+        {
+            filteredEntries = filteredEntries.Where(e =>
+                e.PrimaryMood.Equals(filterMood, StringComparison.OrdinalIgnoreCase) ||
+                (!string.IsNullOrEmpty(e.SecondaryMood1) && e.SecondaryMood1.Equals(filterMood, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(e.SecondaryMood2) && e.SecondaryMood2.Equals(filterMood, StringComparison.OrdinalIgnoreCase))
+            ).ToList();
+        }
+
+        // Filter by tag
+        if (!string.IsNullOrWhiteSpace(filterTag) && int.TryParse(filterTag, out int tagId))
+        {
+            var tagName = availableTags.FirstOrDefault(t => t.Id == tagId)?.Name;
+            if (!string.IsNullOrEmpty(tagName))
+            {
+                filteredEntries = filteredEntries.Where(e => e.TagNames.Contains(tagName)).ToList();
+            }
+        }
+
+        // Filter by category
+        if (!string.IsNullOrWhiteSpace(filterCategory) && int.TryParse(filterCategory, out int categoryId))
+        {
+            var categoryName = availableCategories.FirstOrDefault(c => c.Id == categoryId)?.Name;
+            if (!string.IsNullOrEmpty(categoryName))
+            {
+                filteredEntries = filteredEntries.Where(e => e.CategoryName == categoryName).ToList();
+            }
+        }
+
+        // Sort
+        filteredEntries = sortOrder switch
+        {
+            "oldest" => filteredEntries.OrderBy(e => e.CreatedDate).ToList(),
+            "words-desc" => filteredEntries.OrderByDescending(e => e.WordCount).ToList(),
+            "words-asc" => filteredEntries.OrderBy(e => e.WordCount).ToList(),
+            _ => filteredEntries.OrderByDescending(e => e.CreatedDate).ToList() // newest (default)
+        };
+
+        // Reset to page 1 when filters change
+        currentPage = 1;
+        UpdatePagination();
+    }
+
+    private void UpdatePagination()
+    {
+        totalPages = (int)Math.Ceiling((double)filteredEntries.Count / pageSize);
+        if (totalPages < 1) totalPages = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        var skip = (currentPage - 1) * pageSize;
+        paginatedEntries = filteredEntries.Skip(skip).Take(pageSize).ToList();
+    }
+
+    private void GoToPage(int page)
+    {
+        currentPage = page;
+        UpdatePagination();
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            UpdatePagination();
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            UpdatePagination();
+        }
+    }
+
+    private bool IsToday(DateTime dateTime)
+    {
+        return dateTime.ToLocalTime().Date == DateTime.Now.Date;
+    }
+
+    private void ViewEntry(int entryId)
+    {
+        // View entry details
+        var entry = allEntries.FirstOrDefault(e => e.Id == entryId);
+        if (entry != null)
+        {
+            var content = StripHtml(entry.Content);
+            var preview = content.Length > 500 ? content.Substring(0, 500) + "..." : content;
+
+            var tags = entry.TagNames.Count > 0 ? string.Join(", ", entry.TagNames) : "None";
+            var category = !string.IsNullOrEmpty(entry.CategoryName) ? entry.CategoryName : "None";
+            var moods = FormatMoodName(entry.PrimaryMood);
+            if (!string.IsNullOrEmpty(entry.SecondaryMood1))
+                moods += ", " + FormatMoodName(entry.SecondaryMood1);
+            if (!string.IsNullOrEmpty(entry.SecondaryMood2))
+                moods += ", " + FormatMoodName(entry.SecondaryMood2);
+
+            Application.Current!.MainPage!.DisplayAlert(
+                entry.Title.Length > 0 ? entry.Title : "Untitled Entry",
+                $"Date: {entry.FormattedCreatedDate} at {entry.FormattedTime}\n" +
+                $"Mood: {moods}\n" +
+                $"Category: {category}\n" +
+                $"Tags: {tags}\n" +
+                $"Words: {entry.WordCount}\n\n" +
+                $"{preview}",
+                "Close"
+            );
+        }
+    }
+
+    private async Task DeleteEntry(int entryId)
+    {
+        bool confirmed = await Application.Current!.MainPage!.DisplayAlert(
+            "Delete Entry",
+            "Are you sure you want to delete this entry? This action cannot be undone.",
+            "Delete",
+            "Cancel"
+        );
+
+        if (!confirmed) return;
+
+        var result = await JournalService.DeleteEntryAsync(currentUserId!, entryId);
+
+        if (result.Success)
+        {
+            await Application.Current!.MainPage!.DisplayAlert("Success", "Entry deleted successfully.", "OK");
+            await LoadData(); // Reload data
         }
         else
         {
-            isAuthorized = true;
+            await Application.Current!.MainPage!.DisplayAlert("Error", result.ErrorMessage ?? "Failed to delete entry.", "OK");
         }
+    }
+
+    private string FormatMoodName(string mood)
+    {
+        return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(mood.ToLower());
+    }
+
+    private string StripHtml(string html)
+    {
+        if (string.IsNullOrEmpty(html)) return string.Empty;
+
+        // Simple HTML stripping - remove tags
+        var text = System.Text.RegularExpressions.Regex.Replace(html, "<.*?>", string.Empty);
+        // Decode HTML entities
+        text = System.Net.WebUtility.HtmlDecode(text);
+        return text.Trim();
     }
 }

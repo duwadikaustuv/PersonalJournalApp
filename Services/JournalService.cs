@@ -168,10 +168,16 @@ namespace PersonalJournalApp.Services
         {
             try
             {
+                // Ensure we're comparing dates properly (handle both Date-only and DateTime)
+                var startOfDay = startDate.Date;
+                var endOfDay = endDate.Date.AddDays(1).AddTicks(-1);
+
                 var entries = await _context.JournalEntries
                     .Include(e => e.Category)
                     .Include(e => e.Tags)
-                    .Where(e => e.UserId == userId && e.CreatedDate >= startDate && e.CreatedDate <= endDate)
+                    .Where(e => e.UserId == userId &&
+                           e.CreatedDate >= startOfDay &&
+                           e.CreatedDate <= endOfDay)
                     .OrderByDescending(e => e.CreatedDate)
                     .ToListAsync();
 
