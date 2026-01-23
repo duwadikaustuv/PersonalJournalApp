@@ -7,7 +7,7 @@
 .rich-text-editor {
     flex: 1;
     min-height: 300px;
-    background: white;
+    background: var(--card-bg);
     border-radius: 8px;
 }
 
@@ -16,21 +16,53 @@
         font-size: 15px;
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
+        border-color: var(--border-color);
+        background: var(--card-bg);
+        color: var(--text-primary);
     }
 
     .rich-text-editor ::deep .ql-toolbar {
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
-        background: #f8f9fa;
+        background: var(--hover-bg);
+        border-color: var(--border-color);
     }
+
+        .rich-text-editor ::deep .ql-toolbar .ql-stroke {
+            stroke: var(--text-secondary);
+        }
+
+        .rich-text-editor ::deep .ql-toolbar .ql-fill {
+            fill: var(--text-secondary);
+        }
+
+        .rich-text-editor ::deep .ql-toolbar .ql-picker {
+            color: var(--text-secondary);
+        }
+
+        .rich-text-editor ::deep .ql-toolbar .ql-picker-options {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+        }
+
+        .rich-text-editor ::deep .ql-toolbar button:hover .ql-stroke,
+        .rich-text-editor ::deep .ql-toolbar button.ql-active .ql-stroke {
+            stroke: var(--primary);
+        }
+
+        .rich-text-editor ::deep .ql-toolbar button:hover .ql-fill,
+        .rich-text-editor ::deep .ql-toolbar button.ql-active .ql-fill {
+            fill: var(--primary);
+        }
 
     .rich-text-editor ::deep .ql-editor {
         min-height: 250px;
         max-height: 600px;
         overflow-y: auto;
+        color: var(--text-primary);
     }
 
         .rich-text-editor ::deep .ql-editor.ql-blank::before {
             font-style: italic;
-            color: #adb5bd;
+            color: var(--text-tertiary);
         }

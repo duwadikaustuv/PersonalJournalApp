@@ -42,10 +42,13 @@ else
                         <label>App Lock</label>
                         <p>Require PIN to open your journal</p>
                     </div>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="appLock" checked="@isAppLockEnabled" @onchange="ToggleAppLock" disabled="@(!hasPinSet)" />
+                    <label class="toggle-switch">
+                        <input type="checkbox"
+                               checked="@isAppLockEnabled"
+                               @onclick="OnAppLockToggleClicked"
+                               disabled="@(!hasPinSet)" />
                         <span class="slider"></span>
-                    </div>
+                    </label>
                 </div>
 
                 @if (!hasPinSet)
@@ -484,23 +487,24 @@ else
         ThemeService.CurrentFontSize = currentFontSize;
     }
 
-    private async Task ToggleAppLock(ChangeEventArgs e)
+    private async Task OnAppLockToggleClicked()
     {
-        var enabled = (bool)(e.Value ?? false);
-
-        if (enabled && !hasPinSet)
+        if (!hasPinSet)
         {
             await Application.Current!.MainPage!.DisplayAlert("PIN Required", "Please set a PIN first before enabling App Lock.", "OK");
             return;
         }
 
-        isAppLockEnabled = enabled;
-        AppLockService.IsAppLockEnabled = enabled;
+        // Toggle the state
+        isAppLockEnabled = !isAppLockEnabled;
+        AppLockService.IsAppLockEnabled = isAppLockEnabled;
 
-        if (!enabled)
+        if (!isAppLockEnabled)
         {
             AppLockService.UnlockApp();
         }
+
+        StateHasChanged();
     }
 
     private void OpenPinModal()
