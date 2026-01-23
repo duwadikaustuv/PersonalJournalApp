@@ -1,7 +1,15 @@
 @page "/calendar"
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+@using PersonalJournalApp.Models.Display
+@using PersonalJournalApp.Services
+@using PersonalJournalApp.Auth
+@using PersonalJournalApp.Data
 @inject AuthenticationStateProvider AuthStateProvider
+@inject CustomAuthStateProvider CustomAuthStateProvider
 @inject NavigationManager Navigation
+@inject JournalService JournalService
+@inject AppDbContext DbContext
 
 @if (!isAuthorized)
 {
@@ -9,16 +17,35 @@
 }
 else
 {
-
     <div class="page-content">
         <div class="page-header">
             <div class="header-left">
                 <h1>Calendar</h1>
-                <p class="page-subtitle">View and manage your journal entries</p>
+                <p class="page-subtitle">
+                    <svg class="subtitle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    View your journal entries by date
+                </p>
             </div>
             <div class="header-actions">
-                <button class="btn btn-secondary">Jump to Date</button>
-                <button class="btn btn-primary">+ New Entry</button>
+                <button class="btn btn-secondary" @onclick="GoToToday">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Today
+                </button>
+                <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("/today")'>
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Entry
+                </button>
             </div>
         </div>
 
@@ -28,211 +55,260 @@ else
                 <div class="card calendar-card">
                     <!-- Calendar Header -->
                     <div class="calendar-header">
-                        <button class="nav-btn">‹</button>
-                        <h2 class="calendar-month">December 2025</h2>
-                        <button class="nav-btn">›</button>
+                        <button class="nav-btn" @onclick="PreviousMonth">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <h2 class="calendar-month">@currentDate.ToString("MMMM yyyy")</h2>
+                        <button class="nav-btn" @onclick="NextMonth">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
                     </div>
 
                     <!-- Weekday Headers -->
                     <div class="calendar-weekdays">
-                        <div class="weekday">S</div>
-                        <div class="weekday">M</div>
-                        <div class="weekday">T</div>
-                        <div class="weekday">W</div>
-                        <div class="weekday">T</div>
-                        <div class="weekday">F</div>
-                        <div class="weekday">S</div>
+                        <div class="weekday">Sun</div>
+                        <div class="weekday">Mon</div>
+                        <div class="weekday">Tue</div>
+                        <div class="weekday">Wed</div>
+                        <div class="weekday">Thu</div>
+                        <div class="weekday">Fri</div>
+                        <div class="weekday">Sat</div>
                     </div>
 
                     <!-- Calendar Grid -->
                     <div class="calendar-grid">
-                        <!-- Previous Month Days -->
-                        <button class="calendar-day other-month">
-                            <span class="day-number">29</span>
-                        </button>
-                        <button class="calendar-day other-month">
-                            <span class="day-number">30</span>
-                        </button>
+                        @foreach (var day in calendarDays)
+                        {
+                            var dayClass = GetDayClass(day);
+                            var hasEntry = entriesByDate.ContainsKey(day.Date);
 
-                        <!-- December Days -->
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">1</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">2</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">3</span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">4</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">5</span>
-                            <span class="dot"></span>
-                        </button>
+                            <button class="calendar-day @dayClass @(hasEntry ? "has-entry" : "") @(selectedDate?.Date == day.Date ? "active" : "")"
+                                    @onclick="() => SelectDate(day)"
+                                    disabled="@(day.Month != currentDate.Month)">
+                                <span class="day-number">@day.Day</span>
+                                @if (hasEntry)
+                                {
+                                    <span class="dot" style="background: @GetMoodColor(entriesByDate[day.Date].PrimaryMood)"></span>
+                                }
+                            </button>
+                        }
+                    </div>
 
-                        <button class="calendar-day">
-                            <span class="day-number">6</span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">7</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">8</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">9</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">10</span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">11</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">12</span>
-                        </button>
-
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">13</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">14</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">15</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">16</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">17</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">18</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">19</span>
-                            <span class="dot"></span>
-                        </button>
-
-                        <button class="calendar-day has-entry">
-                            <span class="day-number">20</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day today active">
-                            <span class="day-number">21</span>
-                            <span class="dot"></span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">22</span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">23</span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">24</span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">25</span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">26</span>
-                        </button>
-
-                        <button class="calendar-day">
-                            <span class="day-number">27</span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">28</span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">29</span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">30</span>
-                        </button>
-                        <button class="calendar-day">
-                            <span class="day-number">31</span>
-                        </button>
-
-                        <!-- Next Month Days -->
-                        <button class="calendar-day other-month">
-                            <span class="day-number">1</span>
-                        </button>
-                        <button class="calendar-day other-month">
-                            <span class="day-number">2</span>
-                        </button>
+                    <!-- Legend -->
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot today-dot"></span>
+                            <span class="legend-label">Today</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot entry-dot"></span>
+                            <span class="legend-label">Has Entry</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot selected-dot"></span>
+                            <span class="legend-label">Selected</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right: Entry Preview -->
+            <!-- Right: Entry Preview & Stats -->
             <div class="preview-section">
-                <div class="card preview-card">
-                    <div class="preview-header">
-                        <div class="preview-date-info">
-                            <div class="preview-day">Saturday, December 21</div>
-                            <div class="preview-year">2025</div>
+                @if (selectedDate.HasValue)
+                {
+                    <div class="card preview-card">
+                        @if (selectedEntry != null)
+                        {
+                            <!-- Entry Preview -->
+                            <div class="preview-header">
+                                <div class="preview-date-info">
+                                    <div class="preview-day">@selectedDate.Value.ToString("dddd, MMMM d")</div>
+                                    <div class="preview-year">@selectedDate.Value.Year</div>
+                                </div>
+                                <div class="preview-mood-badge" style="background: @GetMoodColor(selectedEntry.PrimaryMood); color: white;">
+                                    @FormatMoodName(selectedEntry.PrimaryMood)
+                                </div>
+                            </div>
+
+                            <div class="preview-content">
+                                <h3 class="preview-title">@(string.IsNullOrEmpty(selectedEntry.Title) ? "Untitled Entry" : selectedEntry.Title)</h3>
+                                <p class="preview-text">@StripHtml(selectedEntry.PreviewContent)</p>
+                            </div>
+
+                            <div class="preview-meta">
+                                @if (selectedEntry.TagNames.Count > 0)
+                                {
+                                    <span class="meta-badge">
+                                        <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                                        </svg>
+                                        @selectedEntry.TagNames.Count tags
+                                    </span>
+                                }
+                                <span class="meta-badge">
+                                    <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    @selectedEntry.WordCount words
+                                </span>
+                                <span class="meta-badge">
+                                    <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    @selectedEntry.FormattedTime
+                                </span>
+                            </div>
+
+                            @if (selectedEntry.TagNames.Count > 0)
+                            {
+                                <div class="preview-tags">
+                                    @foreach (var tag in selectedEntry.TagNames.Take(5))
+                                    {
+                                        <span class="tag">@tag</span>
+                                    }
+                                    @if (selectedEntry.TagNames.Count > 5)
+                                    {
+                                        <span class="tag tag-more">+@(selectedEntry.TagNames.Count - 5)</span>
+                                    }
+                                </div>
+                            }
+
+                            <div class="preview-actions">
+                                <button class="btn btn-primary full-width" @onclick="ViewSelectedEntry">
+                                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    View Full Entry
+                                </button>
+                                @if (IsToday(selectedEntry.CreatedDate))
+                                {
+                                    <button class="btn btn-secondary full-width" @onclick='() => Navigation.NavigateTo("/today")'>
+                                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        Edit Entry
+                                    </button>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- No Entry State -->
+                            <div class="no-entry-state">
+                                <div class="no-entry-date">
+                                    <div class="preview-day">@selectedDate.Value.ToString("dddd, MMMM d")</div>
+                                    <div class="preview-year">@selectedDate.Value.Year</div>
+                                </div>
+                                <div class="no-entry-content">
+                                    <svg class="no-entry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <p class="no-entry-text">No journal entry for this date</p>
+                                    @if (IsToday(selectedDate.Value))
+                                    {
+                                        <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("/today")'>
+                                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                            Create Entry for Today
+                                        </button>
+                                    }
+                                    else if (selectedDate.Value.Date > DateTime.Now.Date)
+                                    {
+                                        <p class="no-entry-hint">This date is in the future</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="no-entry-hint">You didn't write on this day</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="card preview-card">
+                        <div class="select-date-state">
+                            <svg class="select-date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <p class="select-date-text">Select a date to view entry</p>
+                            <p class="select-date-hint">Click on any day in the calendar</p>
                         </div>
-                        <div class="preview-mood-badge">Happy</div>
                     </div>
-
-                    <div class="preview-content">
-                        <h3 class="preview-title">A Productive Saturday</h3>
-                        <p class="preview-text">
-                            Today was a productive day! I managed to complete most of my tasks and even had time for a walk in the park.
-                            Feeling grateful for good health, supportive friends, and progress on my goals...
-                        </p>
-                    </div>
-
-                    <div class="preview-meta">
-                        <span class="meta-badge">3 tags</span>
-                        <span class="meta-badge">87 words</span>
-                    </div>
-
-                    <div class="preview-tags">
-                        <span class="tag">Work</span>
-                        <span class="tag">Health</span>
-                        <span class="tag">Personal</span>
-                    </div>
-
-                    <div class="preview-actions">
-                        <button class="btn btn-primary full-width">Edit Entry</button>
-                        <button class="btn btn-secondary full-width">View Details</button>
-                    </div>
-                </div>
+                }
 
                 <!-- Stats Card -->
                 <div class="card stats-card">
-                    <h3 class="stats-title">This Month</h3>
+                    <div class="stats-header">
+                        <h3 class="stats-title">@currentDate.ToString("MMMM yyyy")</h3>
+                        <span class="stats-subtitle">Monthly Overview</span>
+                    </div>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <div class="stat-value">21</div>
+                            <div class="stat-value">@monthlyStats.EntriesCount</div>
                             <div class="stat-label">Entries</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">10</div>
+                            <div class="stat-value">@monthlyStats.MissedDays</div>
                             <div class="stat-label">Missed</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">68%</div>
+                            <div class="stat-value">@monthlyStats.CompletionPercentage%</div>
                             <div class="stat-label">Complete</div>
                         </div>
+                    </div>
+                    @if (monthlyStats.MostCommonMood != null)
+                    {
+                        <div class="stats-mood">
+                            <span class="stats-mood-label">Most common mood:</span>
+                            <span class="stats-mood-badge" style="background: @GetMoodColor(monthlyStats.MostCommonMood)">
+                                @FormatMoodName(monthlyStats.MostCommonMood)
+                            </span>
+                        </div>
+                    }
+                </div>
+
+                <!-- Quick Navigation -->
+                <div class="card quick-nav-card">
+                    <h3 class="quick-nav-title">Quick Navigation</h3>
+                    <div class="quick-nav-buttons">
+                        <button class="quick-nav-btn" @onclick="GoToToday">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Today
+                        </button>
+                        <button class="quick-nav-btn" @onclick="GoToLastMonth">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                            Last Month
+                        </button>
+                        <button class="quick-nav-btn" @onclick="GoToNextMonth">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                            Next Month
+                        </button>
                     </div>
                 </div>
             </div>
@@ -242,19 +318,268 @@ else
 
 @code {
     private bool isAuthorized = false;
+    private string? currentUserId;
+
+    // Calendar state
+    private DateTime currentDate = DateTime.Now;
+    private DateTime? selectedDate;
+    private List<DateTime> calendarDays = new();
+
+    // Entries data
+    private Dictionary<DateTime, JournalEntryDisplayModel> entriesByDate = new();
+    private JournalEntryDisplayModel? selectedEntry;
+
+    // Monthly stats
+    private MonthlyStats monthlyStats = new();
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (user.Identity?.IsAuthenticated != true)
+        if (user?.Identity?.IsAuthenticated != true)
         {
             Navigation.NavigateTo("/login");
+            return;
+        }
+
+        var userIdClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        currentUserId = userIdClaim.Value;
+
+        var userExists = await DbContext.Users.AnyAsync(u => u.Id == currentUserId);
+        if (!userExists)
+        {
+            await CustomAuthStateProvider.MarkUserAsLoggedOut();
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        isAuthorized = true;
+
+        // Initialize calendar with today selected
+        selectedDate = DateTime.Now.Date;
+        await LoadMonthData();
+    }
+
+    private async Task LoadMonthData()
+    {
+        GenerateCalendarDays();
+        await LoadEntriesForMonth();
+        CalculateMonthlyStats();
+
+        // Load selected entry if date is selected
+        if (selectedDate.HasValue && entriesByDate.ContainsKey(selectedDate.Value.Date))
+        {
+            selectedEntry = entriesByDate[selectedDate.Value.Date];
         }
         else
         {
-            isAuthorized = true;
+            selectedEntry = null;
         }
+    }
+
+    private void GenerateCalendarDays()
+    {
+        calendarDays.Clear();
+
+        var firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+        // Get the starting day (Sunday of the week containing the 1st)
+        var startDate = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
+
+        // Generate 42 days (6 weeks) to fill the calendar grid
+        for (int i = 0; i < 42; i++)
+        {
+            calendarDays.Add(startDate.AddDays(i));
+        }
+    }
+
+    private async Task LoadEntriesForMonth()
+    {
+        if (string.IsNullOrEmpty(currentUserId)) return;
+
+        entriesByDate.Clear();
+
+        var firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+        var result = await JournalService.GetEntriesByDateRangeAsync(currentUserId, firstDayOfMonth, lastDayOfMonth);
+
+        if (result.Success && result.Data != null)
+        {
+            foreach (var entry in result.Data)
+            {
+                var entryDate = entry.CreatedDate.ToLocalTime().Date;
+                if (!entriesByDate.ContainsKey(entryDate))
+                {
+                    entriesByDate[entryDate] = entry;
+                }
+            }
+        }
+    }
+
+    private void CalculateMonthlyStats()
+    {
+        var firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+        var today = DateTime.Now.Date;
+        var lastRelevantDay = currentDate.Month == today.Month && currentDate.Year == today.Year
+            ? today
+            : new DateTime(currentDate.Year, currentDate.Month, DateTime.DaysInMonth(currentDate.Year, currentDate.Month));
+
+        var daysInMonth = (lastRelevantDay - firstDayOfMonth).Days + 1;
+        var entriesCount = entriesByDate.Count;
+        var missedDays = Math.Max(0, daysInMonth - entriesCount);
+        var completionPercentage = daysInMonth > 0 ? (int)Math.Round((double)entriesCount / daysInMonth * 100) : 0;
+
+        // Find most common mood
+        string? mostCommonMood = null;
+        if (entriesByDate.Count > 0)
+        {
+            mostCommonMood = entriesByDate.Values
+                .GroupBy(e => e.PrimaryMood)
+                .OrderByDescending(g => g.Count())
+                .FirstOrDefault()?.Key;
+        }
+
+        monthlyStats = new MonthlyStats
+        {
+            EntriesCount = entriesCount,
+            MissedDays = missedDays,
+            CompletionPercentage = completionPercentage,
+            MostCommonMood = mostCommonMood
+        };
+    }
+
+    private async Task SelectDate(DateTime date)
+    {
+        if (date.Month != currentDate.Month) return;
+
+        selectedDate = date.Date;
+
+        if (entriesByDate.ContainsKey(date.Date))
+        {
+            selectedEntry = entriesByDate[date.Date];
+        }
+        else
+        {
+            selectedEntry = null;
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private async Task PreviousMonth()
+    {
+        currentDate = currentDate.AddMonths(-1);
+        selectedDate = null;
+        selectedEntry = null;
+        await LoadMonthData();
+    }
+
+    private async Task NextMonth()
+    {
+        currentDate = currentDate.AddMonths(1);
+        selectedDate = null;
+        selectedEntry = null;
+        await LoadMonthData();
+    }
+
+    private async Task GoToToday()
+    {
+        currentDate = DateTime.Now;
+        selectedDate = DateTime.Now.Date;
+        await LoadMonthData();
+    }
+
+    private async Task GoToLastMonth()
+    {
+        await PreviousMonth();
+    }
+
+    private async Task GoToNextMonth()
+    {
+        await NextMonth();
+    }
+
+    private void ViewSelectedEntry()
+    {
+        if (selectedEntry != null)
+        {
+            Navigation.NavigateTo($"/entry/{selectedEntry.Id}");
+        }
+    }
+
+    private string GetDayClass(DateTime day)
+    {
+        var classes = new List<string>();
+
+        if (day.Month != currentDate.Month)
+        {
+            classes.Add("other-month");
+        }
+
+        if (day.Date == DateTime.Now.Date)
+        {
+            classes.Add("today");
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    private bool IsToday(DateTime date)
+    {
+        return date.ToLocalTime().Date == DateTime.Now.Date;
+    }
+
+    private string FormatMoodName(string mood)
+    {
+        if (string.IsNullOrEmpty(mood)) return "";
+        return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(mood.ToLower());
+    }
+
+    private string GetMoodColor(string mood)
+    {
+        return mood?.ToLower() switch
+        {
+            "happy" => "#fbbf24",
+            "excited" => "#fb923c",
+            "relaxed" => "#34d399",
+            "grateful" => "#a78bfa",
+            "confident" => "#f472b6",
+            "calm" => "#60a5fa",
+            "thoughtful" => "#818cf8",
+            "curious" => "#2dd4bf",
+            "nostalgic" => "#c084fc",
+            "bored" => "#9ca3af",
+            "sad" => "#60a5fa",
+            "angry" => "#f87171",
+            "anxious" => "#fbbf24",
+            "stressed" => "#fb7185",
+            "tired" => "#94a3b8",
+            _ => "#6366f1"
+        };
+    }
+
+    private string StripHtml(string html)
+    {
+        if (string.IsNullOrEmpty(html)) return string.Empty;
+        var text = System.Text.RegularExpressions.Regex.Replace(html, "<.*?>", string.Empty);
+        text = System.Net.WebUtility.HtmlDecode(text);
+        return text.Trim();
+    }
+
+    private class MonthlyStats
+    {
+        public int EntriesCount { get; set; }
+        public int MissedDays { get; set; }
+        public int CompletionPercentage { get; set; }
+        public string? MostCommonMood { get; set; }
     }
 }
