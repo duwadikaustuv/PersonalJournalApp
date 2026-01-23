@@ -562,21 +562,40 @@ else
                 // Change PIN flow
                 if (pinStep == 1)
                 {
+                    // Validate current PIN input
+                    if (string.IsNullOrEmpty(currentPinInput) || currentPinInput.Length < 4)
+                    {
+                        pinError = "Please enter your current PIN.";
+                        return;
+                    }
+
                     // Verify current PIN
                     var isValid = await AppLockService.ValidatePinAsync(currentUserId!, currentPinInput);
                     if (!isValid)
                     {
                         pinError = "Current PIN is incorrect.";
+                        currentPinInput = "";
                         return;
                     }
                     pinStep = 2;
+                    currentPinInput = ""; // Clear for security
                 }
                 else if (pinStep == 2)
                 {
                     // Validate new PIN format
-                    if (newPinInput.Length < 4 || newPinInput.Length > 6 || !newPinInput.All(char.IsDigit))
+                    if (string.IsNullOrEmpty(newPinInput))
+                    {
+                        pinError = "Please enter a new PIN.";
+                        return;
+                    }
+                    if (newPinInput.Length < 4 || newPinInput.Length > 6)
                     {
                         pinError = "PIN must be 4-6 digits.";
+                        return;
+                    }
+                    if (!newPinInput.All(char.IsDigit))
+                    {
+                        pinError = "PIN must contain only numbers.";
                         return;
                     }
                     pinStep = 3;
@@ -584,14 +603,28 @@ else
                 else if (pinStep == 3)
                 {
                     // Confirm new PIN
-                    if (newPinInput != confirmPinInput)
+                    if (string.IsNullOrEmpty(confirmPinInput))
                     {
-                        pinError = "PINs do not match.";
+                        pinError = "Please confirm your new PIN.";
                         return;
                     }
-                    await AppLockService.SetPinAsync(currentUserId!, newPinInput);
-                    await Application.Current!.MainPage!.DisplayAlert("Success", "PIN has been changed successfully.", "OK");
-                    ClosePinModal();
+                    if (newPinInput != confirmPinInput)
+                    {
+                        pinError = "PINs do not match. Please try again.";
+                        confirmPinInput = "";
+                        return;
+                    }
+
+                    var success = await AppLockService.SetPinAsync(currentUserId!, newPinInput);
+                    if (success)
+                    {
+                        await Application.Current!.MainPage!.DisplayAlert("Success", $"Your {newPinInput.Length}-digit PIN has been changed successfully.", "OK");
+                        ClosePinModal();
+                    }
+                    else
+                    {
+                        pinError = "Failed to save PIN. Please try again.";
+                    }
                 }
             }
             else
@@ -599,30 +632,57 @@ else
                 // Set new PIN flow
                 if (pinStep == 1)
                 {
-                    if (newPinInput.Length < 4 || newPinInput.Length > 6 || !newPinInput.All(char.IsDigit))
+                    // Validate new PIN format
+                    if (string.IsNullOrEmpty(newPinInput))
+                    {
+                        pinError = "Please enter a PIN.";
+                        return;
+                    }
+                    if (newPinInput.Length < 4 || newPinInput.Length > 6)
                     {
                         pinError = "PIN must be 4-6 digits.";
+                        return;
+                    }
+                    if (!newPinInput.All(char.IsDigit))
+                    {
+                        pinError = "PIN must contain only numbers.";
                         return;
                     }
                     pinStep = 2;
                 }
                 else if (pinStep == 2)
                 {
-                    if (newPinInput != confirmPinInput)
+                    // Confirm new PIN
+                    if (string.IsNullOrEmpty(confirmPinInput))
                     {
-                        pinError = "PINs do not match.";
+                        pinError = "Please confirm your PIN.";
                         return;
                     }
-                    await AppLockService.SetPinAsync(currentUserId!, newPinInput);
-                    hasPinSet = true;
-                    await Application.Current!.MainPage!.DisplayAlert("Success", "PIN has been set successfully. You can now enable App Lock.", "OK");
-                    ClosePinModal();
+                    if (newPinInput != confirmPinInput)
+                    {
+                        pinError = "PINs do not match. Please try again.";
+                        confirmPinInput = "";
+                        return;
+                    }
+
+                    var success = await AppLockService.SetPinAsync(currentUserId!, newPinInput);
+                    if (success)
+                    {
+                        hasPinSet = true;
+                        await Application.Current!.MainPage!.DisplayAlert("Success", $"Your {newPinInput.Length}-digit PIN has been set. You can now enable App Lock.", "OK");
+                        ClosePinModal();
+                    }
+                    else
+                    {
+                        pinError = "Failed to save PIN. Please try again.";
+                    }
                 }
             }
         }
         finally
         {
             isProcessingPin = false;
+            StateHasChanged();
         }
     }
 

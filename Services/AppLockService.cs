@@ -9,6 +9,7 @@ namespace PersonalJournalApp.Services
     {
         private const string AppLockEnabledKey = "app_lock_enabled";
         private const string IsUnlockedKey = "app_is_unlocked";
+        private const string PinLengthKey = "app_pin_length";
         private readonly AppDbContext _context;
 
         public event Action? OnLockStateChanged;
@@ -34,6 +35,19 @@ namespace PersonalJournalApp.Services
             }
         }
 
+
+        // Gets the length of the stored PIN (4, 5, or 6 digits)
+        public int GetPinLength()
+        {
+            return Preferences.Get(PinLengthKey, 4); // Default to 4 if not set
+        }
+
+        // Sets the PIN length in preferences
+        private void SetPinLength(int length)
+        {
+            Preferences.Set(PinLengthKey, length);
+        }
+
         public void LockApp()
         {
             IsUnlocked = false;
@@ -50,9 +64,10 @@ namespace PersonalJournalApp.Services
                 return false;
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user == null)
+            if (user == null || string.IsNullOrEmpty(user.PIN))
                 return false;
 
+            // Compare the entered PIN with the stored PIN
             return user.PIN == enteredPin;
         }
 
@@ -65,9 +80,26 @@ namespace PersonalJournalApp.Services
             return user != null && !string.IsNullOrEmpty(user.PIN);
         }
 
+        // Gets the length of the PIN stored for the user
+        public async Task<int> GetUserPinLengthAsync(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return 4;
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null || string.IsNullOrEmpty(user.PIN))
+                return 4;
+
+            return user.PIN.Length;
+        }
+
         public async Task<bool> SetPinAsync(string userId, string newPin)
         {
             if (string.IsNullOrEmpty(userId))
+                return false;
+
+            // Validate PIN format
+            if (string.IsNullOrEmpty(newPin) || newPin.Length < 4 || newPin.Length > 6 || !newPin.All(char.IsDigit))
                 return false;
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
@@ -76,6 +108,10 @@ namespace PersonalJournalApp.Services
 
             user.PIN = newPin;
             await _context.SaveChangesAsync();
+
+            // Store the PIN length in preferences for quick access
+            SetPinLength(newPin.Length);
+
             return true;
         }
 
@@ -90,6 +126,10 @@ namespace PersonalJournalApp.Services
 
             user.PIN = null;
             IsAppLockEnabled = false;
+
+            // Clear the stored PIN length
+            Preferences.Remove(PinLengthKey);
+
             await _context.SaveChangesAsync();
             return true;
         }
