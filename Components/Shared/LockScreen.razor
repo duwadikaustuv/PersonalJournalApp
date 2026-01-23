@@ -1,0 +1,154 @@
+@using PersonalJournalApp.Services
+@using PersonalJournalApp.Auth
+@inject AppLockService AppLockService
+@inject CustomAuthStateProvider AuthStateProvider
+
+<div class="lock-screen">
+    <div class="lock-container">
+        <div class="lock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+
+        <h1>Welcome Back</h1>
+        <p class="lock-subtitle">Enter your PIN to unlock your journal</p>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-message">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                @errorMessage
+            </div>
+        }
+
+        <div class="pin-display">
+            @for (int i = 0; i < 6; i++)
+            {
+                var index = i;
+                <div class="pin-dot @(index < enteredPin.Length ? "filled" : "")"></div>
+            }
+        </div>
+
+        <div class="pin-keypad">
+            @for (int i = 1; i <= 9; i++)
+            {
+                var num = i;
+                <button class="keypad-btn" @onclick="() => AddDigit(num.ToString())" disabled="@isValidating">
+                    @num
+                </button>
+            }
+            <button class="keypad-btn keypad-action" @onclick="ClearPin" disabled="@isValidating">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                    <line x1="18" y1="9" x2="12" y2="15"></line>
+                    <line x1="12" y1="9" x2="18" y2="15"></line>
+                </svg>
+            </button>
+            <button class="keypad-btn" @onclick='() => AddDigit("0")' disabled="@isValidating">
+                0
+            </button>
+            <button class="keypad-btn keypad-action" @onclick="RemoveDigit" disabled="@isValidating">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        @if (isValidating)
+        {
+            <div class="validating-indicator">
+                <div class="spinner"></div>
+                <span>Verifying...</span>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnUnlocked { get; set; }
+
+    private string enteredPin = "";
+    private string errorMessage = "";
+    private bool isValidating = false;
+    private int attemptCount = 0;
+
+    private async Task AddDigit(string digit)
+    {
+        if (enteredPin.Length >= 6 || isValidating) return;
+
+        enteredPin += digit;
+        errorMessage = "";
+
+        // Auto-submit when 4-6 digits entered (try at 4, 5, or 6)
+        if (enteredPin.Length >= 4)
+        {
+            await ValidatePin();
+        }
+    }
+
+    private void RemoveDigit()
+    {
+        if (enteredPin.Length > 0)
+        {
+            enteredPin = enteredPin.Substring(0, enteredPin.Length - 1);
+            errorMessage = "";
+        }
+    }
+
+    private void ClearPin()
+    {
+        enteredPin = "";
+        errorMessage = "";
+    }
+
+    private async Task ValidatePin()
+    {
+        isValidating = true;
+        StateHasChanged();
+
+        try
+        {
+            var userId = AuthStateProvider.GetCurrentUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                errorMessage = "Session expired. Please login again.";
+                enteredPin = "";
+                return;
+            }
+
+            var isValid = await AppLockService.ValidatePinAsync(userId, enteredPin);
+
+            if (isValid)
+            {
+                AppLockService.UnlockApp();
+                await OnUnlocked.InvokeAsync();
+            }
+            else
+            {
+                attemptCount++;
+                if (attemptCount >= 5)
+                {
+                    errorMessage = "Too many failed attempts. Please try again later.";
+                }
+                else
+                {
+                    errorMessage = $"Incorrect PIN. {5 - attemptCount} attempts remaining.";
+                }
+                enteredPin = "";
+            }
+        }
+        finally
+        {
+            isValidating = false;
+            StateHasChanged();
+        }
+    }
+}

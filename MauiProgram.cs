@@ -60,6 +60,8 @@ namespace PersonalJournalApp
                 options.FallbackPolicy = null;
             });
             builder.Services.AddSingleton<PdfExportService>();
+            builder.Services.AddSingleton<ThemeService>();
+            builder.Services.AddScoped<AppLockService>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

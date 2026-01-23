@@ -1,11 +1,77 @@
 ﻿@inherits LayoutComponentBase
+@using PersonalJournalApp.Services
+@using PersonalJournalApp.Auth
+@using PersonalJournalApp.Components.Shared
+@inject ThemeService ThemeService
+@inject AppLockService AppLockService
+@inject CustomAuthStateProvider AuthStateProvider
+@implements IDisposable
 
-<div class="app-container">
-    <NavMenu />
+@if (showLockScreen)
+{
+    <LockScreen OnUnlocked="HandleUnlocked" />
+}
+else
+{
+    <div class="app-container @ThemeService.GetThemeClass() @ThemeService.GetFontSizeClass()">
+        <NavMenu />
 
-    <main class="main-content">
-        <div class="page-wrapper">
-            @Body
-        </div>
-    </main>
-</div>
+        <main class="main-content">
+            <div class="page-wrapper">
+                @Body
+            </div>
+        </main>
+    </div>
+}
+
+@code {
+    private bool showLockScreen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ThemeService.OnThemeChanged += HandleThemeChanged;
+        AppLockService.OnLockStateChanged += HandleLockStateChanged;
+        
+        await CheckLockStatus();
+    }
+
+    private async Task CheckLockStatus()
+    {
+        var userId = AuthStateProvider.GetCurrentUserId();
+        
+        if (!string.IsNullOrEmpty(userId) && AppLockService.IsAppLockEnabled)
+        {
+            var hasPin = await AppLockService.HasPinSetAsync(userId);
+            if (hasPin && !AppLockService.IsUnlocked)
+            {
+                showLockScreen = true;
+            }
+        }
+    }
+
+    private void HandleThemeChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleLockStateChanged()
+    {
+        InvokeAsync(async () =>
+        {
+            await CheckLockStatus();
+            StateHasChanged();
+        });
+    }
+
+    private void HandleUnlocked()
+    {
+        showLockScreen = false;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= HandleThemeChanged;
+        AppLockService.OnLockStateChanged -= HandleLockStateChanged;
+    }
+}

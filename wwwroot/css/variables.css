@@ -2,22 +2,21 @@
     /* Colors */
     --primary: #6366f1;
     --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
     --secondary: #8b5cf6;
     --success: #10b981;
     --danger: #ef4444;
     --warning: #f59e0b;
-    /* Backgrounds */
+    /* Light Theme (Default) */
     --bg-primary: #ffffff;
     --bg-secondary: #f8fafc;
     --bg-tertiary: #f1f5f9;
     --bg-dark: #1e293b;
     --bg-darker: #0f172a;
-    /* Text */
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-tertiary: #94a3b8;
     --text-white: #ffffff;
-    /* Borders */
     --border-color: #e2e8f0;
     --border-radius: 12px;
     --border-radius-sm: 8px;
@@ -39,4 +38,38 @@
     --mood-anxious: #f87171;
     --mood-excited: #fb923c;
     --mood-grateful: #a78bfa;
+    /* Card/Input backgrounds */
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+    --hover-bg: #f1f5f9;
+}
+
+/* Dark Theme */
+.theme-dark {
+    --bg-primary: #1e293b;
+    --bg-secondary: #0f172a;
+    --bg-tertiary: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #64748b;
+    --border-color: #334155;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --card-bg: #1e293b;
+    --input-bg: #0f172a;
+    --hover-bg: #334155;
+}
+
+/* Font Size Classes */
+.font-small {
+    font-size: 14px;
+}
+
+.font-medium {
+    font-size: 16px;
+}
+
+.font-large {
+    font-size: 18px;
 }
