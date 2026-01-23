@@ -518,32 +518,7 @@ else
 
     private void ViewEntry(int entryId)
     {
-        // View entry details
-        var entry = allEntries.FirstOrDefault(e => e.Id == entryId);
-        if (entry != null)
-        {
-            var content = StripHtml(entry.Content);
-            var preview = content.Length > 500 ? content.Substring(0, 500) + "..." : content;
-
-            var tags = entry.TagNames.Count > 0 ? string.Join(", ", entry.TagNames) : "None";
-            var category = !string.IsNullOrEmpty(entry.CategoryName) ? entry.CategoryName : "None";
-            var moods = FormatMoodName(entry.PrimaryMood);
-            if (!string.IsNullOrEmpty(entry.SecondaryMood1))
-                moods += ", " + FormatMoodName(entry.SecondaryMood1);
-            if (!string.IsNullOrEmpty(entry.SecondaryMood2))
-                moods += ", " + FormatMoodName(entry.SecondaryMood2);
-
-            Application.Current!.MainPage!.DisplayAlert(
-                entry.Title.Length > 0 ? entry.Title : "Untitled Entry",
-                $"Date: {entry.FormattedCreatedDate} at {entry.FormattedTime}\n" +
-                $"Mood: {moods}\n" +
-                $"Category: {category}\n" +
-                $"Tags: {tags}\n" +
-                $"Words: {entry.WordCount}\n\n" +
-                $"{preview}",
-                "Close"
-            );
-        }
+        Navigation.NavigateTo($"/entry/{entryId}");
     }
 
     private async Task DeleteEntry(int entryId)
