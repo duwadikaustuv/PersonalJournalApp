@@ -10,6 +10,7 @@
 @inject NavigationManager Navigation
 @inject JournalService JournalService
 @inject AppDbContext DbContext
+@inject PersonalJournalApp.Services.PdfExportService PdfExportService
 
 @if (!isAuthorized)
 {
@@ -305,23 +306,24 @@ else
 
         try
         {
-            var htmlContent = GeneratePdfHtml();
+            var filePath = await PdfExportService.ExportSingleEntryAsync(entry);
 
-            var fileName = "journal_entry_" + entry.CreatedDate.ToLocalTime().ToString("yyyy-MM-dd") + ".html";
-            var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
-
-            await File.WriteAllTextAsync(filePath, htmlContent);
-
-            await Launcher.OpenAsync(new OpenFileRequest
+            if (!string.IsNullOrEmpty(filePath))
             {
-                File = new ReadOnlyFile(filePath)
-            });
-
-            await Application.Current!.MainPage!.DisplayAlert(
-                "Export",
-                "The entry has been opened. Use your browser or viewer's Print function to save as PDF.",
-                "OK"
-            );
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Export Successful",
+                    $"Your journal entry has been saved as PDF to:\n{filePath}",
+                    "OK"
+                );
+            }
+            else
+            {
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Export Cancelled",
+                    "The export was cancelled.",
+                    "OK"
+                );
+            }
         }
         catch (Exception ex)
         {

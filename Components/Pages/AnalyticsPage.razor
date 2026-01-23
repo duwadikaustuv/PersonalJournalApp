@@ -11,6 +11,7 @@
 @inject JournalService JournalService
 @inject TagService TagService
 @inject AppDbContext DbContext
+@inject PersonalJournalApp.Services.PdfExportService PdfExportService
 
 @if (!isAuthorized)
 {
@@ -783,15 +784,45 @@ else
 
     private async Task ExportReport()
     {
-        // Generate report content
-        var reportContent = GenerateReportText();
+        try
+        {
+            var reportData = new AnalyticsReportData
+            {
+                PeriodLabel = GetPeriodLabel(),
+                TotalEntries = analytics.TotalEntries,
+                TotalWords = analytics.TotalWords,
+                AverageWordsPerEntry = analytics.AverageWordsPerEntry,
+                CurrentStreak = analytics.CurrentStreak,
+                LongestStreak = analytics.LongestStreak,
+                DaysJournaling = analytics.DaysJournaling,
+                UniqueTags = analytics.UniqueTags,
+                MoodCounts = analytics.MoodCounts,
+                TopTags = analytics.TopTags
+            };
 
-        // Show alert with report info
-        await Application.Current!.MainPage!.DisplayAlert(
-            "Report Generated",
-            "Your analytics report has been generated. You can copy the details from the page.",
-            "OK"
-        );
+            var filePath = await PdfExportService.ExportAnalyticsReportAsync(reportData);
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Export Successful",
+                    $"Your analytics report has been saved as PDF to:\n{filePath}",
+                    "OK"
+                );
+            }
+            else
+            {
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Export Cancelled",
+                    "The export was cancelled.",
+                    "OK"
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current!.MainPage!.DisplayAlert("Error", "Failed to export report: " + ex.Message, "OK");
+        }
     }
 
     private string GenerateReportText()

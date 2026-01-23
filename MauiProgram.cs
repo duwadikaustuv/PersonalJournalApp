@@ -59,6 +59,7 @@ namespace PersonalJournalApp
             {
                 options.FallbackPolicy = null;
             });
+            builder.Services.AddSingleton<PdfExportService>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

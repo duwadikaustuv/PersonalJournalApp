@@ -472,6 +472,71 @@
     height: 14px;
 }
 
+/* Timeline Selection Mode Styles */
+.selected-count {
+    font-size: 14px;
+    color: #6366f1;
+    font-weight: 500;
+    padding: 8px 12px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 6px;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+    .btn-outline:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+    }
+
+.select-all-btn {
+    background: none;
+    border: none;
+    color: #6366f1;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+    .select-all-btn:hover {
+        color: #4f46e5;
+    }
+
+.entry-card.selected {
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.entry-checkbox {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+}
+
+    .entry-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: #6366f1;
+        cursor: pointer;
+    }
+
+.entry-card {
+    position: relative;
+}
+
 /* Pagination */
 .pagination {
     display: flex;
