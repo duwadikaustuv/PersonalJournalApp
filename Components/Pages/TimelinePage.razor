@@ -27,42 +27,60 @@ else
                 <p class="page-subtitle">Browse all your journal entries</p>
             </div>
             <div class="header-actions">
-                @if (isSelectMode)
-                {
-                    <span class="selected-count">@selectedEntryIds.Count selected</span>
-                    <button class="btn btn-secondary" @onclick="ExportSelectedEntries" disabled="@(selectedEntryIds.Count == 0)">
+                <button class="btn btn-secondary" @onclick="ToggleFilters">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    @(showFilters ? "Hide Filters" : "Show Filters")
+                </button>
+                <div class="export-dropdown">
+                    <button class="btn btn-secondary" @onclick="ToggleExportMenu">
                         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="7 10 12 15 17 10"></polyline>
                             <line x1="12" y1="15" x2="12" y2="3"></line>
                         </svg>
-                        Export PDF
-                    </button>
-                    <button class="btn btn-outline" @onclick="CancelSelectMode">Cancel</button>
-                }
-                else
-                {
-                    <button class="btn btn-outline" @onclick="StartSelectMode">
-                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 11 12 14 22 4"></polyline>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        Export
+                        <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
-                        Select & Export
                     </button>
-                    <button class="btn btn-secondary" @onclick="ToggleFilters">
-                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                        </svg>
-                        @(showFilters ? "Hide Filters" : "Show Filters")
-                    </button>
-                    <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("/today")'>
-                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        New Entry
-                    </button>
-                }
+                    @if (showExportMenu)
+                    {
+                        <div class="export-menu">
+                            <button class="export-option" @onclick="ExportAllEntries">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                                Export All (@allEntries.Count entries)
+                            </button>
+                            <button class="export-option" @onclick="ExportFilteredEntries" disabled="@(filteredEntries.Count == allEntries.Count)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                </svg>
+                                Export Filtered (@filteredEntries.Count entries)
+                            </button>
+                            <div class="export-divider"></div>
+                            <button class="export-option" @onclick="OpenDateRangeExport">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                Export by Date Range...
+                            </button>
+                        </div>
+                    }
+                </div>
+                <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("/today")'>
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Entry
+                </button>
             </div>
         </div>
 
@@ -158,6 +176,78 @@ else
                     </select>
                 </div>
                 <button class="clear-filters-btn" @onclick="ClearFilters">Clear All</button>
+            </div>
+        }
+
+        <!-- Date Range Export Modal -->
+        @if (showDateRangeModal)
+        {
+            <div class="modal-overlay" @onclick="CloseDateRangeModal">
+                <div class="modal-content" @onclick:stopPropagation>
+                    <div class="modal-header">
+                        <h3>Export by Date Range</h3>
+                        <button class="modal-close" @onclick="CloseDateRangeModal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @if (!string.IsNullOrEmpty(exportError))
+                        {
+                            <div class="export-error">@exportError</div>
+                        }
+
+                        <div class="date-range-form">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <input type="date" class="form-input" @bind="exportStartDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <input type="date" class="form-input" @bind="exportEndDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            </div>
+                        </div>
+
+                        @if (exportStartDate.HasValue && exportEndDate.HasValue)
+                        {
+                            var entriesInRange = GetEntriesInDateRange(exportStartDate.Value, exportEndDate.Value);
+                            <div class="export-preview">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                                <span>@entriesInRange.Count entries found in this date range</span>
+                            </div>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="CloseDateRangeModal">Cancel</button>
+                        <button class="btn btn-primary" @onclick="ExportByDateRange" disabled="@(!exportStartDate.HasValue || !exportEndDate.HasValue || isExporting)">
+                            @if (isExporting)
+                            {
+                                <span>Exporting...</span>
+                            }
+                            else
+                            {
+                                <span>Export PDF</span>
+                            }
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Export Success Toast -->
+        @if (showExportSuccess)
+        {
+            <div class="export-toast success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>PDF exported successfully!</span>
             </div>
         }
 
@@ -361,6 +451,15 @@ else
     private string filterCategory = string.Empty;
     private string sortOrder = "newest";
 
+    // Export state
+    private bool showExportMenu = false;
+    private bool showDateRangeModal = false;
+    private DateTime? exportStartDate;
+    private DateTime? exportEndDate;
+    private bool isExporting = false;
+    private string exportError = "";
+    private bool showExportSuccess = false;
+
     // Pagination
     private int currentPage = 1;
     private const int pageSize = 10;
@@ -485,6 +584,136 @@ else
         else
         {
             selectedEntryIds = filteredEntries.Select(e => e.Id).ToHashSet();
+        }
+    }
+
+    private void ToggleExportMenu()
+    {
+        showExportMenu = !showExportMenu;
+    }
+
+    private void CloseExportMenu()
+    {
+        showExportMenu = false;
+    }
+
+    private async Task ExportAllEntries()
+    {
+        CloseExportMenu();
+        await ExportEntries(allEntries, "All Entries");
+    }
+
+    private async Task ExportFilteredEntries()
+    {
+        CloseExportMenu();
+        await ExportEntries(filteredEntries, "Filtered Entries");
+    }
+
+    private async Task ExportEntries(List<JournalEntryDisplayModel> entries, string label)
+    {
+        if (entries.Count == 0) return;
+
+        isExporting = true;
+        StateHasChanged();
+
+        try
+        {
+            var filePath = await PdfExportService.ExportMultipleEntriesAsync(entries);
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                showExportSuccess = true;
+                StateHasChanged();
+
+                await Task.Delay(3000);
+                showExportSuccess = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            exportError = "Failed to export entries.";
+        }
+        finally
+        {
+            isExporting = false;
+            StateHasChanged();
+        }
+    }
+
+    private void OpenDateRangeExport()
+    {
+        CloseExportMenu();
+        exportStartDate = DateTime.Now.AddMonths(-1);
+        exportEndDate = DateTime.Now;
+        exportError = "";
+        showDateRangeModal = true;
+    }
+
+    private void CloseDateRangeModal()
+    {
+        showDateRangeModal = false;
+        exportError = "";
+    }
+
+    private List<JournalEntryDisplayModel> GetEntriesInDateRange(DateTime start, DateTime end)
+    {
+        return allEntries.Where(e =>
+            e.CreatedDate.Date >= start.Date &&
+            e.CreatedDate.Date <= end.Date
+        ).ToList();
+    }
+
+    private async Task ExportByDateRange()
+    {
+        if (!exportStartDate.HasValue || !exportEndDate.HasValue) return;
+
+        if (exportStartDate.Value > exportEndDate.Value)
+        {
+            exportError = "Start date must be before end date.";
+            return;
+        }
+
+        var entriesInRange = GetEntriesInDateRange(exportStartDate.Value, exportEndDate.Value);
+
+        if (entriesInRange.Count == 0)
+        {
+            exportError = "No entries found in the selected date range.";
+            return;
+        }
+
+        isExporting = true;
+        exportError = "";
+        StateHasChanged();
+
+        try
+        {
+            var filePath = await PdfExportService.ExportEntriesByDateRangeAsync(
+                entriesInRange,
+                exportStartDate.Value,
+                exportEndDate.Value
+            );
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                CloseDateRangeModal();
+                showExportSuccess = true;
+                StateHasChanged();
+
+                await Task.Delay(3000);
+                showExportSuccess = false;
+            }
+            else
+            {
+                exportError = "Failed to generate PDF.";
+            }
+        }
+        catch (Exception ex)
+        {
+            exportError = "An error occurred during export.";
+        }
+        finally
+        {
+            isExporting = false;
+            StateHasChanged();
         }
     }
 
