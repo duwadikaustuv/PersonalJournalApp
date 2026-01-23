@@ -105,53 +105,92 @@ else
         <!-- Mood Category Breakdown -->
         <div class="mood-breakdown-section">
             <h3 class="section-title">Mood Overview</h3>
-            <div class="mood-categories">
-                <div class="mood-category positive">
-                    <div class="category-header">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                        </svg>
-                        <span class="category-label">Positive</span>
+            @if (analytics.TotalEntries > 0)
+            {
+                <div class="mood-overview-grid">
+                    <div class="mood-ring-container">
+                        <div class="mood-ring">
+                            <svg viewBox="0 0 120 120">
+                                @{
+                                    var total = analytics.PositiveMoodPercentage + analytics.NeutralMoodPercentage + analytics.NegativeMoodPercentage;
+                                    var circumference = 2 * Math.PI * 45;
+                                    var positiveOffset = 0.0;
+                                    var neutralOffset = (analytics.PositiveMoodPercentage / 100.0) * circumference;
+                                    var negativeOffset = neutralOffset + (analytics.NeutralMoodPercentage / 100.0) * circumference;
+                                }
+                                <!-- Background circle -->
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="var(--border-color)" stroke-width="12" />
+                                <!-- Positive segment -->
+                                <circle cx="60" cy="60" r="45" fill="none"
+                                        stroke="var(--success)" stroke-width="12"
+                                        stroke-dasharray="@((analytics.PositiveMoodPercentage / 100.0) * circumference) @circumference"
+                                        stroke-dashoffset="0"
+                                        transform="rotate(-90 60 60)" />
+                                <!-- Neutral segment -->
+                                <circle cx="60" cy="60" r="45" fill="none"
+                                        stroke="var(--warning)" stroke-width="12"
+                                        stroke-dasharray="@((analytics.NeutralMoodPercentage / 100.0) * circumference) @circumference"
+                                        stroke-dashoffset="@(-neutralOffset)"
+                                        transform="rotate(-90 60 60)" />
+                                <!-- Negative segment -->
+                                <circle cx="60" cy="60" r="45" fill="none"
+                                        stroke="var(--danger)" stroke-width="12"
+                                        stroke-dasharray="@((analytics.NegativeMoodPercentage / 100.0) * circumference) @circumference"
+                                        stroke-dashoffset="@(-negativeOffset)"
+                                        transform="rotate(-90 60 60)" />
+                            </svg>
+                            <div class="mood-ring-center">
+                                <span class="mood-ring-value">@analytics.TotalEntries</span>
+                                <span class="mood-ring-label">Entries</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="category-percentage">@analytics.PositiveMoodPercentage%</div>
-                    <div class="category-bar">
-                        <div class="category-bar-fill" style="width: @analytics.PositiveMoodPercentage%;"></div>
+                    <div class="mood-legend">
+                        <div class="mood-legend-item">
+                            <div class="legend-dot positive"></div>
+                            <div class="legend-info">
+                                <span class="legend-label">Positive</span>
+                                <span class="legend-value">@analytics.PositiveMoodPercentage%</span>
+                            </div>
+                            <div class="legend-bar">
+                                <div class="legend-bar-fill positive" style="width: @analytics.PositiveMoodPercentage%;"></div>
+                            </div>
+                        </div>
+                        <div class="mood-legend-item">
+                            <div class="legend-dot neutral"></div>
+                            <div class="legend-info">
+                                <span class="legend-label">Neutral</span>
+                                <span class="legend-value">@analytics.NeutralMoodPercentage%</span>
+                            </div>
+                            <div class="legend-bar">
+                                <div class="legend-bar-fill neutral" style="width: @analytics.NeutralMoodPercentage%;"></div>
+                            </div>
+                        </div>
+                        <div class="mood-legend-item">
+                            <div class="legend-dot negative"></div>
+                            <div class="legend-info">
+                                <span class="legend-label">Negative</span>
+                                <span class="legend-value">@analytics.NegativeMoodPercentage%</span>
+                            </div>
+                            <div class="legend-bar">
+                                <div class="legend-bar-fill negative" style="width: @analytics.NegativeMoodPercentage%;"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="mood-category neutral">
-                    <div class="category-header">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="8" y1="15" x2="16" y2="15"></line>
-                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                        </svg>
-                        <span class="category-label">Neutral</span>
-                    </div>
-                    <div class="category-percentage">@analytics.NeutralMoodPercentage%</div>
-                    <div class="category-bar">
-                        <div class="category-bar-fill" style="width: @analytics.NeutralMoodPercentage%;"></div>
-                    </div>
+            }
+            else
+            {
+                <div class="empty-mood-overview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="48" height="48">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                    <p>No mood data yet. Start journaling to see your mood patterns!</p>
                 </div>
-                <div class="mood-category negative">
-                    <div class="category-header">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
-                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                        </svg>
-                        <span class="category-label">Negative</span>
-                    </div>
-                    <div class="category-percentage">@analytics.NegativeMoodPercentage%</div>
-                    <div class="category-bar">
-                        <div class="category-bar-fill" style="width: @analytics.NegativeMoodPercentage%;"></div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
 
         <!-- Charts Grid -->
@@ -390,17 +429,21 @@ else
             <div class="insights-grid">
                 @if (analytics.CurrentStreak > 0)
                 {
-                    <div class="insight-card">
-                        <div class="insight-icon positive">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                            </svg>
+                    @if (!string.IsNullOrEmpty(analytics.MostActiveTimeSlot) && analytics.TotalEntries > 0)
+                    {
+                        <div class="insight-card">
+                            <div class="insight-icon neutral">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <div class="insight-content">
+                                <h4>Most Active Time</h4>
+                                <p>You journal most frequently during the @analytics.MostActiveTimeSlot. This is your prime writing time!</p>
+                            </div>
                         </div>
-                        <div class="insight-content">
-                            <h4>@(analytics.CurrentStreak >= 7 ? "Amazing Streak!" : "Building Momentum")</h4>
-                            <p>You've maintained a @analytics.CurrentStreak-day streak! @(analytics.CurrentStreak >= analytics.LongestStreak && analytics.CurrentStreak > 1 ? "This is your best streak yet!" : $"Your longest streak is {analytics.LongestStreak} days.")</p>
-                        </div>
-                    </div>
+                    }
                 }
 
                 @if (!string.IsNullOrEmpty(analytics.MostCommonMood))

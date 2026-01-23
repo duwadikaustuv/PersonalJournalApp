@@ -2,8 +2,9 @@
 @using PersonalJournalApp.Auth
 @inject AppLockService AppLockService
 @inject CustomAuthStateProvider AuthStateProvider
+@inject ThemeService ThemeService
 
-<div class="lock-screen">
+<div class="lock-screen @ThemeService.GetThemeClass()" @onkeydown="HandleKeyDown" tabindex="0" @ref="lockScreenRef">
     <div class="lock-container">
         <div class="lock-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -75,16 +76,47 @@
     [Parameter]
     public EventCallback OnUnlocked { get; set; }
 
+    private ElementReference lockScreenRef;
     private string enteredPin = "";
     private string errorMessage = "";
     private bool isValidating = false;
     private int attemptCount = 0;
-    private int pinLength = 4; // Will be updated on initialization
+    private int pinLength = 4;
     private bool isInitialized = false;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadPinLength();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Focus the lock screen to enable keyboard input
+            await lockScreenRef.FocusAsync();
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (isValidating) return;
+
+        // Handle number keys (0-9)
+        if (e.Key.Length == 1 && char.IsDigit(e.Key[0]))
+        {
+            await AddDigit(e.Key);
+        }
+        // Handle backspace
+        else if (e.Key == "Backspace")
+        {
+            RemoveDigit();
+        }
+        // Handle Escape to clear
+        else if (e.Key == "Escape")
+        {
+            ClearPin();
+        }
     }
 
     private async Task LoadPinLength()
@@ -98,19 +130,17 @@
             }
             else
             {
-                // Fallback to preferences if user ID not available yet
                 pinLength = AppLockService.GetPinLength();
             }
-            
-            // Ensure valid range
+
             if (pinLength < 4) pinLength = 4;
             if (pinLength > 6) pinLength = 6;
         }
         catch
         {
-            pinLength = 4; // Default fallback
+            pinLength = 4;
         }
-        
+
         isInitialized = true;
         StateHasChanged();
     }
@@ -122,7 +152,6 @@
         enteredPin += digit;
         errorMessage = "";
 
-        // Auto-submit when the correct number of digits are entered
         if (enteredPin.Length == pinLength)
         {
             await ValidatePin();
@@ -150,15 +179,14 @@
     private async Task ValidatePin()
     {
         if (isValidating) return;
-        
+
         isValidating = true;
         StateHasChanged();
 
         try
         {
-            // Small delay for UX
             await Task.Delay(300);
-            
+
             var userId = AuthStateProvider.GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
             {

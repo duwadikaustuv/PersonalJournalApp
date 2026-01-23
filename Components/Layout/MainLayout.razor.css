@@ -20,5 +20,6 @@
     .main-content {
         margin-left: 0;
         padding: var(--space-md);
+        padding-top: calc(60px + var(--space-md));
     }
 }

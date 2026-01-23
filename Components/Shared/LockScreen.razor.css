@@ -9,17 +9,29 @@
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    outline: none;
 }
 
+    /* Dark mode gradient */
+    .lock-screen.theme-dark {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+    }
+
 .lock-container {
-    background: var(--card-bg);
+    background: var(--card-bg, #ffffff);
     border-radius: 24px;
     padding: 48px;
     text-align: center;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     max-width: 400px;
     width: 90%;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+/* Dark mode container */
+.theme-dark .lock-container {
+    background: var(--bg-darker, #0f172a);
+    border-color: var(--border-color, #334155);
 }
 
 .lock-icon {
@@ -42,14 +54,22 @@
 .lock-container h1 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--text-primary, #0f172a);
     margin-bottom: 8px;
 }
 
+.theme-dark .lock-container h1 {
+    color: var(--text-white, #f8fafc);
+}
+
 .lock-subtitle {
-    color: var(--text-secondary);
+    color: var(--text-secondary, #475569);
     font-size: 0.9375rem;
     margin-bottom: 32px;
+}
+
+.theme-dark .lock-subtitle {
+    color: var(--text-tertiary, #94a3b8);
 }
 
 .error-message {
@@ -58,7 +78,7 @@
     justify-content: center;
     gap: 8px;
     background: rgba(239, 68, 68, 0.1);
-    color: var(--danger);
+    color: var(--danger, #ef4444);
     padding: 12px 16px;
     border-radius: 8px;
     font-size: 0.875rem;
@@ -83,14 +103,18 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: var(--border-color);
+    background: var(--border-color, #e2e8f0);
     transition: all 0.2s;
 }
 
-    .pin-dot.filled {
-        background: var(--primary);
-        transform: scale(1.1);
-    }
+.theme-dark .pin-dot {
+    background: var(--text-tertiary, #475569);
+}
+
+.pin-dot.filled {
+    background: var(--primary, #6366f1);
+    transform: scale(1.1);
+}
 
 .pin-keypad {
     display: grid;
@@ -105,47 +129,65 @@
     height: 72px;
     border: none;
     border-radius: 50%;
-    background: var(--hover-bg);
+    background: var(--hover-bg, #f1f5f9);
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-primary, #0f172a);
     cursor: pointer;
     transition: all 0.15s;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-color, #e2e8f0);
 }
 
-    .keypad-btn:hover:not(:disabled) {
-        background: var(--bg-tertiary);
-        transform: scale(1.05);
+.theme-dark .keypad-btn {
+    background: var(--bg-dark, #1e293b);
+    color: var(--text-white, #f8fafc);
+    border-color: var(--border-color, #334155);
+}
+
+.keypad-btn:hover:not(:disabled) {
+    background: var(--bg-tertiary, #e2e8f0);
+    transform: scale(1.05);
+}
+
+.theme-dark .keypad-btn:hover:not(:disabled) {
+    background: var(--hover-bg, #334155);
+}
+
+.keypad-btn:active:not(:disabled) {
+    transform: scale(0.95);
+    background: var(--border-color, #cbd5e1);
+}
+
+.keypad-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.keypad-btn.keypad-action {
+    background: transparent;
+    border-color: transparent;
+}
+
+    .keypad-btn.keypad-action svg {
+        width: 24px;
+        height: 24px;
+        color: var(--text-secondary, #64748b);
     }
 
-    .keypad-btn:active:not(:disabled) {
-        transform: scale(0.95);
-        background: var(--border-color);
-    }
+.theme-dark .keypad-btn.keypad-action svg {
+    color: var(--text-tertiary, #94a3b8);
+}
 
-    .keypad-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
+.keypad-btn.keypad-action:hover:not(:disabled) {
+    background: var(--hover-bg, #f1f5f9);
+}
 
-    .keypad-btn.keypad-action {
-        background: transparent;
-        border-color: transparent;
-    }
-
-        .keypad-btn.keypad-action svg {
-            width: 24px;
-            height: 24px;
-            color: var(--text-secondary);
-        }
-
-        .keypad-btn.keypad-action:hover:not(:disabled) {
-            background: var(--hover-bg);
-        }
+.theme-dark .keypad-btn.keypad-action:hover:not(:disabled) {
+    background: var(--bg-dark, #1e293b);
+}
 
 .validating-indicator {
     display: flex;
@@ -153,15 +195,19 @@
     justify-content: center;
     gap: 12px;
     margin-top: 24px;
-    color: var(--text-secondary);
+    color: var(--text-secondary, #64748b);
     font-size: 0.875rem;
+}
+
+.theme-dark .validating-indicator {
+    color: var(--text-tertiary, #94a3b8);
 }
 
 .spinner {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--border-color);
-    border-top-color: var(--primary);
+    border: 2px solid var(--border-color, #e2e8f0);
+    border-top-color: var(--primary, #6366f1);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }

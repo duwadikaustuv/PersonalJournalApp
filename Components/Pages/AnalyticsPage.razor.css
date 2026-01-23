@@ -153,101 +153,144 @@
     margin: 0 0 16px 0;
 }
 
-/* Mood Breakdown Section */
-.mood-breakdown-section {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-}
-
-.mood-categories {
+/* Mood Overview */
+.mood-overview-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: auto 1fr;
+    gap: 40px;
+    align-items: center;
 }
 
-.mood-category {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 20px;
-    background: var(--hover-bg);
-    border-radius: 12px;
-    transition: all 0.15s;
-}
-
-    .mood-category:hover {
-        box-shadow: var(--shadow-md);
-    }
-
-    .mood-category.positive {
-        border-left: 4px solid var(--primary);
-    }
-
-    .mood-category.neutral {
-        border-left: 4px solid var(--text-tertiary);
-    }
-
-    .mood-category.negative {
-        border-left: 4px solid var(--text-secondary);
-    }
-
-.category-header {
+.mood-ring-container {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
 }
 
-    .category-header svg {
-        color: var(--primary);
+.mood-ring {
+    position: relative;
+    width: 160px;
+    height: 160px;
+}
+
+    .mood-ring svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(0deg);
     }
 
-.mood-category.neutral .category-header svg {
+.mood-ring-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.mood-ring-value {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.mood-ring-label {
+    display: block;
+    font-size: 0.75rem;
     color: var(--text-tertiary);
+    margin-top: 4px;
 }
 
-.mood-category.negative .category-header svg {
-    color: var(--text-secondary);
+.mood-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.category-label {
+.mood-legend-item {
+    display: grid;
+    grid-template-columns: 12px 100px 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+    .legend-dot.positive {
+        background: var(--success);
+    }
+
+    .legend-dot.neutral {
+        background: var(--warning);
+    }
+
+    .legend-dot.negative {
+        background: var(--danger);
+    }
+
+.legend-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.legend-label {
     font-size: 0.875rem;
     color: var(--text-secondary);
     font-weight: 500;
 }
 
-.category-percentage {
-    font-size: 1.5rem;
-    font-weight: 700;
+.legend-value {
+    font-size: 0.875rem;
     color: var(--text-primary);
+    font-weight: 600;
 }
 
-.category-bar {
+.legend-bar {
     height: 8px;
     background: var(--border-color);
     border-radius: 4px;
     overflow: hidden;
 }
 
-.mood-category.positive .category-bar-fill {
-    background: var(--primary);
-}
-
-.mood-category.neutral .category-bar-fill {
-    background: var(--text-tertiary);
-}
-
-.mood-category.negative .category-bar-fill {
-    background: var(--text-secondary);
-}
-
-.category-bar-fill {
+.legend-bar-fill {
     height: 100%;
     border-radius: 4px;
     transition: width 0.5s ease;
 }
+
+    .legend-bar-fill.positive {
+        background: var(--success);
+    }
+
+    .legend-bar-fill.neutral {
+        background: var(--warning);
+    }
+
+    .legend-bar-fill.negative {
+        background: var(--danger);
+    }
+
+.empty-mood-overview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    color: var(--text-tertiary);
+    gap: 16px;
+}
+
+    .empty-mood-overview p {
+        font-size: 0.9375rem;
+        text-align: center;
+        max-width: 300px;
+    }
 
 /* Charts Grid */
 .charts-grid {
@@ -751,15 +794,13 @@
         width: 100%;
     }
 
-    .mood-breakdown-section {
-        padding: 16px;
+    .mood-overview-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
     }
 
-    .mood-category {
-        padding: 16px;
-    }
-
-    .category-percentage {
-        font-size: 1.25rem;
+    .mood-ring {
+        width: 140px;
+        height: 140px;
     }
 }
