@@ -54,27 +54,54 @@
 
 /* Dark Theme */
 .theme-dark {
+    /* black background */
     --bg-primary: #000000;
-    --bg-secondary: #000000;
-    --bg-tertiary: #1a1a1a;
-    --text-primary: #ffffff;
-    --text-secondary: #a3a3a3;
-    --text-tertiary: #737373;
-    --border-color: #262626;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.6);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
-    --card-bg: #0a0a0a;
-    --input-bg: #0a0a0a;
+    --bg-secondary: #0a0a0a;
+    --bg-tertiary: #141414;
+    
+    /* text colors */
+    --text-primary: #f5f5f5;
+    --text-secondary: #d4d4d4;
+    --text-tertiary: #a3a3a3;
+    
+    /* border */
+    --border-color: #2a2a2a;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.8);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.9);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.95);
+    
+    /* Card backgrounds */
+    --card-bg: #0d0d0d;
+    --input-bg: #0d0d0d;
     --hover-bg: #1a1a1a;
+    
+    /* Primary colors adjusted for dark */
+    --primary: #818cf8;
+    --primary-dark: #6366f1;
+    --primary-light: #a5b4fc;
+    
     /* Navbar for dark */
     --nav-bg: #000000;
-    --nav-border: #262626;
-    --nav-text: #a3a3a3;
+    --nav-border: #1f1f1f;
+    --nav-text: #b3b3b3;
     --nav-text-hover: #ffffff;
-    --nav-hover-bg: #1a1a1a;
-    --nav-active-bg: #1a1a1a;
-    --nav-active-text: #818cf8;
+    --nav-hover-bg: #141414;
+    --nav-active-bg: rgba(99, 102, 241, 0.15);
+    --nav-active-text: #a5b4fc;
+    
+    /* Mood colors */
+    --mood-happy: #fcd34d;
+    --mood-sad: #93c5fd;
+    --mood-calm: #6ee7b7;
+    --mood-anxious: #fca5a5;
+    --mood-excited: #fdba74;
+    --mood-grateful: #c4b5fd;
+    
+    --success: #34d399;
+    --danger: #f87171;
+    --warning: #fbbf24;
 }
 
 /* Font Size Classes */

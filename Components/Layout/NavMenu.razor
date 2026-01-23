@@ -1,4 +1,7 @@
-﻿<nav class="sidebar-nav">
+﻿@inject PersonalJournalApp.Services.AppLockService AppLockService
+@inject NavigationManager Navigation
+
+<nav class="sidebar-nav">
     <div class="sidebar-header">
         <div class="logo">
             <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -52,12 +55,26 @@
     </div>
 
     <div class="sidebar-footer">
-        <button class="lock-button">
-            <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            <span>Lock App</span>
-        </button>
+        @if (AppLockService.IsAppLockEnabled)
+        {
+            <button class="lock-button" @onclick="LockApp">
+                <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Lock App</span>
+            </button>
+        }
     </div>
 </nav>
+
+@code {
+    private void LockApp()
+    {
+        if (AppLockService.IsAppLockEnabled)
+        {
+            AppLockService.LockApp();
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+    }
+}
