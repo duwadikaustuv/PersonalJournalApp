@@ -5,62 +5,144 @@
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 
-<div class="auth-container">
-    <div class="auth-card">
-        <h2 class="auth-title">Create Account</h2>
-        <p class="auth-subtitle">Start your journaling journey</p>
+<div class="auth-page @themeClass">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-subtitle">Start your journaling journey today</p>
 
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <div class="alert alert-danger">@errorMessage</div>
-        }
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>@errorMessage</span>
+                </div>
+            }
 
-        @if (!string.IsNullOrEmpty(successMessage))
-        {
-            <div class="alert alert-success">@successMessage</div>
-        }
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="alert alert-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>@successMessage</span>
+                </div>
+            }
 
-        <EditForm Model="@registerModel" OnValidSubmit="@HandleRegister" class="auth-form">
-            <DataAnnotationsValidator />
+            <EditForm Model="@registerModel" OnValidSubmit="@HandleRegister" class="auth-form">
+                <DataAnnotationsValidator />
 
-            <div class="form-group">
-                <label for="username">Username</label>
-                <InputText id="username" @bind-Value="registerModel.UserName" class="form-control" placeholder="Choose a username" />
-                <ValidationMessage For="@(() => registerModel.UserName)" class="text-danger" />
+                <div class="form-group">
+                    <label for="username">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Username
+                    </label>
+                    <InputText id="username" @bind-Value="registerModel.UserName" class="form-control" placeholder="Choose a username" autocomplete="username" />
+                    <ValidationMessage For="@(() => registerModel.UserName)" class="validation-error" />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Email
+                    </label>
+                    <InputText id="email" @bind-Value="registerModel.Email" class="form-control" placeholder="Enter your email" autocomplete="email" />
+                    <ValidationMessage For="@(() => registerModel.Email)" class="validation-error" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Password
+                    </label>
+                    <div class="password-input-wrapper">
+                        <InputText id="password" type="@(showPassword ? "text" : "password")" @bind-Value="registerModel.Password" class="form-control" placeholder="Create a password (min. 6 characters)" autocomplete="new-password" />
+                        <button type="button" class="password-toggle" @onclick="TogglePasswordVisibility">
+                            @if (showPassword)
+                            {
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            }
+                        </button>
+                    </div>
+                    <ValidationMessage For="@(() => registerModel.Password)" class="validation-error" />
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Confirm Password
+                    </label>
+                    <div class="password-input-wrapper">
+                        <InputText id="confirmPassword" type="@(showConfirmPassword ? "text" : "password")" @bind-Value="registerModel.ConfirmPassword" class="form-control" placeholder="Confirm your password" autocomplete="new-password" />
+                        <button type="button" class="password-toggle" @onclick="ToggleConfirmPasswordVisibility">
+                            @if (showConfirmPassword)
+                            {
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            }
+                        </button>
+                    </div>
+                    <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="validation-error" />
+                </div>
+
+                <button type="submit" class="btn-submit" disabled="@isLoading">
+                    @if (isLoading)
+                    {
+                        <span class="loading-spinner"></span>
+                        <span>Creating Account...</span>
+                    }
+                    else
+                    {
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                        </svg>
+                        <span>Create Account</span>
+                    }
+                </button>
+            </EditForm>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="/login" class="auth-link">Sign in</a></p>
             </div>
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <InputText id="email" @bind-Value="registerModel.Email" class="form-control" placeholder="Enter your email" />
-                <ValidationMessage For="@(() => registerModel.Email)" class="text-danger" />
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <InputText id="password" type="password" @bind-Value="registerModel.Password" class="form-control" placeholder="Create a password" />
-                <ValidationMessage For="@(() => registerModel.Password)" class="text-danger" />
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <InputText id="confirmPassword" type="password" @bind-Value="registerModel.ConfirmPassword" class="form-control" placeholder="Confirm your password" />
-                <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="text-danger" />
-            </div>
-
-            <button type="submit" class="btn-primary" disabled="@isLoading">
-                @if (isLoading)
-                {
-                    <span>Creating Account...</span>
-                }
-                else
-                {
-                    <span>Create Account</span>
-                }
-            </button>
-        </EditForm>
-
-        <div class="auth-footer">
-            <p>Already have an account? <a href="/login" class="auth-link">Sign in</a></p>
         </div>
     </div>
 </div>
@@ -68,8 +150,27 @@
 @code {
     private RegisterInputModel registerModel = new();
     private bool isLoading = false;
+    private bool showPassword = false;
+    private bool showConfirmPassword = false;
     private string errorMessage = string.Empty;
     private string successMessage = string.Empty;
+    private string themeClass = "theme-light";
+
+    protected override void OnInitialized()
+    {
+        // Detect system theme for register page
+        themeClass = ThemeService.GetSystemThemeClass();
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+    private void ToggleConfirmPasswordVisibility()
+    {
+        showConfirmPassword = !showConfirmPassword;
+    }
 
     private async Task HandleRegister()
     {

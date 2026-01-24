@@ -174,11 +174,13 @@
     height: 20px;
     stroke-width: 2;
     flex-shrink: 0;
+    color: #818cf8;
 }
 
 .nav-text {
     font-size: 0.9375rem;
     letter-spacing: -0.01em;
+    color: #818cf8;
 }
 
 .sidebar-footer {

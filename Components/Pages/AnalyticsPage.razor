@@ -122,19 +122,19 @@ else
                                 <circle cx="60" cy="60" r="45" fill="none" stroke="var(--border-color)" stroke-width="12" />
                                 <!-- Positive segment -->
                                 <circle cx="60" cy="60" r="45" fill="none"
-                                        stroke="var(--success)" stroke-width="12"
+                                        stroke="#a78bfa" stroke-width="12"
                                         stroke-dasharray="@((analytics.PositiveMoodPercentage / 100.0) * circumference) @circumference"
                                         stroke-dashoffset="0"
                                         transform="rotate(-90 60 60)" />
                                 <!-- Neutral segment -->
                                 <circle cx="60" cy="60" r="45" fill="none"
-                                        stroke="var(--warning)" stroke-width="12"
+                                        stroke="#9ca3af" stroke-width="12"
                                         stroke-dasharray="@((analytics.NeutralMoodPercentage / 100.0) * circumference) @circumference"
                                         stroke-dashoffset="@(-neutralOffset)"
                                         transform="rotate(-90 60 60)" />
                                 <!-- Negative segment -->
                                 <circle cx="60" cy="60" r="45" fill="none"
-                                        stroke="var(--danger)" stroke-width="12"
+                                        stroke="#6b7280" stroke-width="12"
                                         stroke-dasharray="@((analytics.NegativeMoodPercentage / 100.0) * circumference) @circumference"
                                         stroke-dashoffset="@(-negativeOffset)"
                                         transform="rotate(-90 60 60)" />

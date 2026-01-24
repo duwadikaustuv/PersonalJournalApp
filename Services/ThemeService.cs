@@ -11,7 +11,7 @@ namespace PersonalJournalApp.Services
 
         public string CurrentTheme
         {
-            get => Preferences.Get(ThemeKey, "Light");
+            get => Preferences.Get(ThemeKey, "System"); // Default to System
             set
             {
                 Preferences.Set(ThemeKey, value);
@@ -29,16 +29,45 @@ namespace PersonalJournalApp.Services
             }
         }
 
-        public bool IsDarkMode => CurrentTheme == "Dark";
+        // Gets whether the effective theme is dark mode (considering System preference)
+        public bool IsDarkMode
+        {
+            get
+            {
+                if (CurrentTheme == "System")
+                {
+                    return GetSystemThemeIsDark();
+                }
+                return CurrentTheme == "Dark";
+            }
+        }
+
+        // Detects if the system is using dark mode
+        public static bool GetSystemThemeIsDark()
+        {
+            // Use MAUI's AppInfo to detect current app theme
+            return Application.Current?.RequestedTheme == AppTheme.Dark;
+        }
 
         public string GetThemeClass()
         {
+            if (CurrentTheme == "System")
+            {
+                return GetSystemThemeIsDark() ? "theme-dark" : "theme-light";
+            }
+
             return CurrentTheme switch
             {
                 "Dark" => "theme-dark",
                 "Light" => "theme-light",
-                _ => "" // Auto - handled by system
+                _ => "theme-light"
             };
+        }
+
+        // Gets theme class based on system preference (for login/register pages)
+        public static string GetSystemThemeClass()
+        {
+            return GetSystemThemeIsDark() ? "theme-dark" : "theme-light";
         }
 
         public string GetFontSizeClass()

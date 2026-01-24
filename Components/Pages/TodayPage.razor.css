@@ -235,6 +235,7 @@
     cursor: not-allowed;
 }
 
+/* Mood Icons */
 .mood-icon {
     width: 22px;
     height: 22px;
@@ -247,15 +248,15 @@
 }
 
 .mood-icon.positive {
-    color: var(--success);
+    color: #9ca3af;
 }
 
 .mood-icon.neutral {
-    color: var(--warning);
+    color: #9ca3af;
 }
 
 .mood-icon.negative {
-    color: var(--danger);
+    color: #9ca3af;
 }
 
 .mood-option.selected .mood-icon.positive,

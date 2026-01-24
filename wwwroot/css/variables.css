@@ -32,11 +32,11 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     /* Mood colors */
-    --mood-happy: #fbbf24;
-    --mood-sad: #60a5fa;
-    --mood-calm: #34d399;
-    --mood-anxious: #f87171;
-    --mood-excited: #fb923c;
+    --mood-happy: #a78bfa;
+    --mood-sad: #6b7280;
+    --mood-calm: #9ca3af;
+    --mood-anxious: #9ca3af;
+    --mood-excited: #c4b5fd;
     --mood-grateful: #a78bfa;
     /* Card/Input backgrounds */
     --card-bg: #ffffff;
@@ -54,51 +54,43 @@
 
 /* Dark Theme */
 .theme-dark {
-    /* black background */
-    --bg-primary: #000000;
-    --bg-secondary: #0a0a0a;
-    --bg-tertiary: #141414;
-    
+    /* Softer dark background */
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #141414;
+    --bg-tertiary: #1f1f1f;
     /* text colors */
-    --text-primary: #f5f5f5;
-    --text-secondary: #d4d4d4;
-    --text-tertiary: #a3a3a3;
-    
+    --text-primary: #f9fafb;
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #9ca3af;
     /* border */
-    --border-color: #2a2a2a;
-    
+    --border-color: #374151;
     /* Shadows */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.8);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.9);
     --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.95);
-    
     /* Card backgrounds */
-    --card-bg: #0d0d0d;
-    --input-bg: #0d0d0d;
-    --hover-bg: #1a1a1a;
-    
-    /* Primary colors adjusted for dark */
+    --card-bg: #1a1a1a;
+    --input-bg: #1a1a1a;
+    --hover-bg: #262626;
+    /* Primary colors */
     --primary: #818cf8;
     --primary-dark: #6366f1;
     --primary-light: #a5b4fc;
-    
     /* Navbar for dark */
-    --nav-bg: #000000;
-    --nav-border: #1f1f1f;
-    --nav-text: #b3b3b3;
-    --nav-text-hover: #ffffff;
-    --nav-hover-bg: #141414;
-    --nav-active-bg: rgba(99, 102, 241, 0.15);
-    --nav-active-text: #a5b4fc;
-    
+    --nav-bg: #0f0f0f;
+    --nav-border: #2a2a2a;
+    --nav-text: #d1d5db;
+    --nav-text-hover: #f9fafb;
+    --nav-hover-bg: #262626;
+    --nav-active-bg: rgba(99, 102, 241, 0.2);
+    --nav-active-text: #c4b5fd;
     /* Mood colors */
-    --mood-happy: #fcd34d;
-    --mood-sad: #93c5fd;
-    --mood-calm: #6ee7b7;
-    --mood-anxious: #fca5a5;
-    --mood-excited: #fdba74;
+    --mood-happy: #c4b5fd;
+    --mood-sad: #9ca3af;
+    --mood-calm: #a1a1aa;
+    --mood-anxious: #a1a1aa;
+    --mood-excited: #ddd6fe;
     --mood-grateful: #c4b5fd;
-    
     --success: #34d399;
     --danger: #f87171;
     --warning: #fbbf24;

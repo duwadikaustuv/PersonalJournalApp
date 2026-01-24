@@ -548,22 +548,29 @@ else
     {
         return mood?.ToLower() switch
         {
-            "happy" => "#fbbf24",
-            "excited" => "#fb923c",
-            "relaxed" => "#34d399",
-            "grateful" => "#a78bfa",
-            "confident" => "#f472b6",
-            "calm" => "#60a5fa",
-            "thoughtful" => "#818cf8",
-            "curious" => "#2dd4bf",
-            "nostalgic" => "#c084fc",
-            "bored" => "#9ca3af",
-            "sad" => "#60a5fa",
-            "angry" => "#f87171",
-            "anxious" => "#fbbf24",
-            "stressed" => "#fb7185",
-            "tired" => "#94a3b8",
-            _ => "#6366f1"
+            // Positive moods
+            "happy" => "#a78bfa",    
+            "excited" => "#c4b5fd",    
+            "relaxed" => "#8b5cf6",    
+            "grateful" => "#a78bfa",   
+            "confident" => "#c4b5fd",   
+
+            // Neutral moods - grays
+            "calm" => "#9ca3af",       
+            "thoughtful" => "#6b7280",  
+            "curious" => "#9ca3af",    
+            "nostalgic" => "#6b7280",  
+            "bored" => "#d1d5db",   
+
+            // Negative moods - darker grays
+            "sad" => "#6b7280",       
+            "angry" => "#4b5563",    
+            "anxious" => "#9ca3af",   
+            "stressed" => "#6b7280",  
+            "tired" => "#9ca3af",     
+            "lonely" => "#6b7280",    
+
+            _ => "#6366f1"           
         };
     }
 
