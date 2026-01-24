@@ -71,6 +71,20 @@
         color: var(--danger);
     }
 
+    .setting-item.sub-setting {
+        padding-left: 24px;
+        background: var(--bg-tertiary);
+        border-left: 3px solid var(--primary-light);
+    }
+
+        .setting-item.sub-setting .setting-info label {
+            font-size: 0.9rem;
+        }
+
+        .setting-item.sub-setting .setting-info p {
+            font-size: 0.8rem;
+        }
+
 .setting-info {
     flex: 1;
 }

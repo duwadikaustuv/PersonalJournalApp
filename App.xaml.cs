@@ -33,25 +33,25 @@ namespace PersonalJournalApp
 
         private void SetupLifecycleHandlers(Window window, AppLockService appLockService)
         {
-            // Lock app when user switches to another app
+            // Lock app when user switches to another app (if enabled)
             window.Deactivated += (s, e) =>
             {
-                if (appLockService.IsAppLockEnabled)
+                if (appLockService.IsAppLockEnabled && appLockService.LockOnSwitchApp)
                 {
                     appLockService.LockApp();
                 }
             };
 
-            // Lock app when it's stopped/backgrounded
+            // Lock app when it's stopped/backgrounded (if enabled)
             window.Stopped += (s, e) =>
             {
-                if (appLockService.IsAppLockEnabled)
+                if (appLockService.IsAppLockEnabled && appLockService.LockOnMinimize)
                 {
                     appLockService.LockApp();
                 }
             };
 
-            // handle app lifecycle via Application events
+            // Always lock when app is being destroyed
             window.Destroying += (s, e) =>
             {
                 if (appLockService.IsAppLockEnabled)
@@ -69,7 +69,7 @@ namespace PersonalJournalApp
             if (Handler?.MauiContext?.Services != null)
             {
                 var appLockService = Handler.MauiContext.Services.GetService<AppLockService>();
-                if (appLockService?.IsAppLockEnabled == true)
+                if (appLockService?.IsAppLockEnabled == true && appLockService.LockOnMinimize)
                 {
                     appLockService.LockApp();
                 }

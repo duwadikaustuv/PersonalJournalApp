@@ -11,6 +11,8 @@ namespace PersonalJournalApp.Services
         private const string AppLockEnabledKey = "app_lock_enabled";
         private const string IsUnlockedKey = "app_is_unlocked";
         private const string PinLengthKey = "app_pin_length";
+        private const string LockOnSwitchAppKey = "lock_on_switch_app";
+        private const string LockOnMinimizeKey = "lock_on_minimize";
         private readonly IServiceScopeFactory _scopeFactory;
 
         public event Action? OnLockStateChanged;
@@ -34,6 +36,20 @@ namespace PersonalJournalApp.Services
                 Preferences.Set(IsUnlockedKey, value);
                 OnLockStateChanged?.Invoke();
             }
+        }
+
+        // Lock when user switches to another app (window deactivated)
+        public bool LockOnSwitchApp
+        {
+            get => Preferences.Get(LockOnSwitchAppKey, true); // Default: ON
+            set => Preferences.Set(LockOnSwitchAppKey, value);
+        }
+
+        // Lock when app is minimized/backgrounded (window stopped)
+        public bool LockOnMinimize
+        {
+            get => Preferences.Get(LockOnMinimizeKey, true); // Default: ON
+            set => Preferences.Set(LockOnMinimizeKey, value);
         }
 
         // Gets the length of the stored PIN (4, 5, or 6 digits)

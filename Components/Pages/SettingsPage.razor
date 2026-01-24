@@ -51,6 +51,35 @@ else
                     </label>
                 </div>
 
+                @if (isAppLockEnabled)
+                {
+                    <div class="setting-item sub-setting">
+                        <div class="setting-info">
+                            <label>Lock on Switch App</label>
+                            <p>Lock when switching to another app</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox"
+                                   checked="@lockOnSwitchApp"
+                                   @onclick="ToggleLockOnSwitchApp" />
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item sub-setting">
+                        <div class="setting-info">
+                            <label>Lock on Minimize</label>
+                            <p>Lock when app is minimized or backgrounded</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox"
+                                   checked="@lockOnMinimize"
+                                   @onclick="ToggleLockOnMinimize" />
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                }
+
                 @if (!hasPinSet)
                 {
                     <div class="info-banner">
@@ -391,6 +420,8 @@ else
     // Security settings
     private bool isAppLockEnabled = false;
     private bool hasPinSet = false;
+    private bool lockOnSwitchApp = true;
+    private bool lockOnMinimize = true;
 
     // Tag/Category management
     private bool showTagManagement = false;
@@ -445,6 +476,8 @@ else
         // Load security settings
         isAppLockEnabled = AppLockService.IsAppLockEnabled;
         hasPinSet = await AppLockService.HasPinSetAsync(currentUserId!);
+        lockOnSwitchApp = AppLockService.LockOnSwitchApp;
+        lockOnMinimize = AppLockService.LockOnMinimize;
 
         // Load user info
         var dbUser = await DbContext.Users.FirstOrDefaultAsync(u => u.Id == currentUserId);
@@ -458,6 +491,20 @@ else
 
         // Load tags and categories
         await LoadTagsAndCategories();
+    }
+
+    private void ToggleLockOnSwitchApp()
+    {
+        lockOnSwitchApp = !lockOnSwitchApp;
+        AppLockService.LockOnSwitchApp = lockOnSwitchApp;
+        StateHasChanged();
+    }
+
+    private void ToggleLockOnMinimize()
+    {
+        lockOnMinimize = !lockOnMinimize;
+        AppLockService.LockOnMinimize = lockOnMinimize;
+        StateHasChanged();
     }
 
     private async Task LoadTagsAndCategories()
