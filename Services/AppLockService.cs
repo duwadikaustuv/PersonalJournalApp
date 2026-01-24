@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using PersonalJournalApp.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PersonalJournalApp.Services
 {
@@ -10,13 +11,13 @@ namespace PersonalJournalApp.Services
         private const string AppLockEnabledKey = "app_lock_enabled";
         private const string IsUnlockedKey = "app_is_unlocked";
         private const string PinLengthKey = "app_pin_length";
-        private readonly AppDbContext _context;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public event Action? OnLockStateChanged;
 
-        public AppLockService(AppDbContext context)
+        public AppLockService(IServiceScopeFactory scopeFactory)
         {
-            _context = context;
+            _scopeFactory = scopeFactory;
         }
 
         public bool IsAppLockEnabled
@@ -34,7 +35,6 @@ namespace PersonalJournalApp.Services
                 OnLockStateChanged?.Invoke();
             }
         }
-
 
         // Gets the length of the stored PIN (4, 5, or 6 digits)
         public int GetPinLength()
@@ -63,7 +63,10 @@ namespace PersonalJournalApp.Services
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(enteredPin))
                 return false;
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null || string.IsNullOrEmpty(user.PIN))
                 return false;
 
@@ -76,7 +79,10 @@ namespace PersonalJournalApp.Services
             if (string.IsNullOrEmpty(userId))
                 return false;
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             return user != null && !string.IsNullOrEmpty(user.PIN);
         }
 
@@ -86,7 +92,10 @@ namespace PersonalJournalApp.Services
             if (string.IsNullOrEmpty(userId))
                 return 4;
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null || string.IsNullOrEmpty(user.PIN))
                 return 4;
 
@@ -102,12 +111,15 @@ namespace PersonalJournalApp.Services
             if (string.IsNullOrEmpty(newPin) || newPin.Length < 4 || newPin.Length > 6 || !newPin.All(char.IsDigit))
                 return false;
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
                 return false;
 
             user.PIN = newPin;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             // Store the PIN length in preferences for quick access
             SetPinLength(newPin.Length);
@@ -120,7 +132,10 @@ namespace PersonalJournalApp.Services
             if (string.IsNullOrEmpty(userId))
                 return false;
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
                 return false;
 
@@ -130,7 +145,7 @@ namespace PersonalJournalApp.Services
             // Clear the stored PIN length
             Preferences.Remove(PinLengthKey);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return true;
         }
 

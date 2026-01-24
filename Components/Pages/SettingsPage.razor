@@ -1,4 +1,4 @@
-@page "/settings"
+ï»¿@page "/settings"
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.EntityFrameworkCore
 @using PersonalJournalApp.Services
@@ -346,19 +346,19 @@ else
                 @if (hasPinSet && pinStep == 1)
                 {
                     <label class="pin-label">Enter Current PIN</label>
-                    <input type="password" class="pin-input" maxlength="6" @bind="currentPinInput" placeholder="••••••" />
+                    <input type="password" class="pin-input" maxlength="6" @bind="currentPinInput" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢" />
                 }
 
                 @if (pinStep == 2 || (!hasPinSet && pinStep == 1))
                 {
                     <label class="pin-label">Enter New PIN (4-6 digits)</label>
-                    <input type="password" class="pin-input" maxlength="6" @bind="newPinInput" placeholder="••••••" />
+                    <input type="password" class="pin-input" maxlength="6" @bind="newPinInput" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢" />
                 }
 
                 @if (pinStep == 3 || (!hasPinSet && pinStep == 2))
                 {
                     <label class="pin-label">Confirm New PIN</label>
-                    <input type="password" class="pin-input" maxlength="6" @bind="confirmPinInput" placeholder="••••••" />
+                    <input type="password" class="pin-input" maxlength="6" @bind="confirmPinInput" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢" />
                 }
             </div>
             <div class="modal-footer">

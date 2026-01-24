@@ -61,7 +61,7 @@ namespace PersonalJournalApp
             });
             builder.Services.AddSingleton<PdfExportService>();
             builder.Services.AddSingleton<ThemeService>();
-            builder.Services.AddScoped<AppLockService>();
+            builder.Services.AddSingleton<AppLockService>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
