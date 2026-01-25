@@ -9,6 +9,7 @@
 @inject CustomAuthStateProvider CustomAuthStateProvider
 @inject NavigationManager Navigation
 @inject JournalService JournalService
+@inject PdfExportService PdfExportService
 @inject AppDbContext DbContext
 
 @if (!isAuthorized)
@@ -38,6 +39,14 @@ else
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                     Today
+                </button>
+                <button class="btn btn-secondary" @onclick="ExportCurrentMonth" disabled="@(monthlyStats.EntriesCount == 0)">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export Month
                 </button>
                 <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("/today")'>
                     <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -516,6 +525,70 @@ else
         }
     }
 
+    private async Task ExportCurrentMonth()
+    {
+        try
+        {
+            if (monthlyStats.EntriesCount == 0)
+            {
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "No Entries",
+                    "There are no journal entries for this month to export.",
+                    "OK"
+                );
+                return;
+            }
+
+            var firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+            // Get all entries for the current month
+            var entriesToExport = entriesByDate.Values.OrderBy(e => e.CreatedDate).ToList();
+
+            if (entriesToExport.Count == 0)
+            {
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "No Entries",
+                    "There are no journal entries for this month to export.",
+                    "OK"
+                );
+                return;
+            }
+
+            // Use the PdfExportService to export entries by date range
+            var filePath = await PdfExportService.ExportEntriesByDateRangeAsync(
+                entriesToExport,
+                firstDayOfMonth,
+                lastDayOfMonth
+            );
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Export Successful",
+                    $"Your journal entries for {currentDate:MMMM yyyy} have been exported as PDF to:\n{filePath}",
+                    "OK"
+                );
+            }
+            else
+            {
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Export Cancelled",
+                    "The export was cancelled.",
+                    "OK"
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current!.MainPage!.DisplayAlert(
+                "Export Error",
+                $"Failed to export entries: {ex.Message}",
+                "OK"
+            );
+        }
+    }
+
     private string GetDayClass(DateTime day)
     {
         var classes = new List<string>();
@@ -549,28 +622,28 @@ else
         return mood?.ToLower() switch
         {
             // Positive moods
-            "happy" => "#a78bfa",    
-            "excited" => "#c4b5fd",    
-            "relaxed" => "#8b5cf6",    
-            "grateful" => "#a78bfa",   
-            "confident" => "#c4b5fd",   
+            "happy" => "#a78bfa",
+            "excited" => "#c4b5fd",
+            "relaxed" => "#8b5cf6",
+            "grateful" => "#a78bfa",
+            "confident" => "#c4b5fd",
 
             // Neutral moods - grays
-            "calm" => "#9ca3af",       
-            "thoughtful" => "#6b7280",  
-            "curious" => "#9ca3af",    
-            "nostalgic" => "#6b7280",  
-            "bored" => "#d1d5db",   
+            "calm" => "#9ca3af",
+            "thoughtful" => "#6b7280",
+            "curious" => "#9ca3af",
+            "nostalgic" => "#6b7280",
+            "bored" => "#d1d5db",
 
             // Negative moods - darker grays
-            "sad" => "#6b7280",       
-            "angry" => "#4b5563",    
-            "anxious" => "#9ca3af",   
-            "stressed" => "#6b7280",  
-            "tired" => "#9ca3af",     
-            "lonely" => "#6b7280",    
+            "sad" => "#6b7280",
+            "angry" => "#4b5563",
+            "anxious" => "#9ca3af",
+            "stressed" => "#6b7280",
+            "tired" => "#9ca3af",
+            "lonely" => "#6b7280",
 
-            _ => "#6366f1"           
+            _ => "#6366f1"
         };
     }
 
