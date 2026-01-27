@@ -402,7 +402,13 @@
     gap: 16px;
     max-height: 240px;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
+
+    .category-chart::-webkit-scrollbar {
+        display: none;
+    }
 
 .category-item {
     display: flex;
