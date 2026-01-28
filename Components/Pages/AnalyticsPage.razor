@@ -1,17 +1,4 @@
 ﻿@page "/analytics"
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.EntityFrameworkCore
-@using PersonalJournalApp.Models.Display
-@using PersonalJournalApp.Services
-@using PersonalJournalApp.Auth
-@using PersonalJournalApp.Data
-@inject AuthenticationStateProvider AuthStateProvider
-@inject CustomAuthStateProvider CustomAuthStateProvider
-@inject NavigationManager Navigation
-@inject JournalService JournalService
-@inject TagService TagService
-@inject AppDbContext DbContext
-@inject PersonalJournalApp.Services.PdfExportService PdfExportService
 
 @if (!isAuthorized)
 {
@@ -228,7 +215,57 @@ else
                 </div>
             </div>
 
-            <!-- Writing Frequency -->
+            <!-- Category Distribution -->
+            <div class="card chart-card">
+                <div class="chart-header">
+                    <h3>Category Distribution</h3>
+                    <span class="chart-subtitle">Entries by category</span>
+                </div>
+                <div class="chart-content">
+                    @if (analytics.CategoryCounts.Any())
+                    {
+                        <div class="category-chart">
+                            @{
+                                var categoryColors = new[] { "#8b5cf6", "#a78bfa", "#c4b5fd", "#6b7280", "#9ca3af", "#d1d5db", "#7c3aed", "#6366f1" };
+                                var maxCategoryCount = analytics.CategoryCounts.Values.Max();
+                                var colorIndex = 0;
+                            }
+                            @foreach (var category in analytics.CategoryCounts.OrderByDescending(c => c.Value))
+                            {
+                                var percentage = analytics.TotalEntries > 0 ? (category.Value * 100.0 / analytics.TotalEntries) : 0;
+                                var color = categoryColors[colorIndex % categoryColors.Length];
+                                colorIndex++;
+                                <div class="category-item">
+                                    <div class="category-info">
+                                        <div class="category-name-row">
+                                            <div class="category-color-dot" style="background: @color;"></div>
+                                            <span class="category-name">@(string.IsNullOrEmpty(category.Key) ? "Uncategorized" : category.Key)</span>
+                                        </div>
+                                        <div class="category-bar">
+                                            <div class="category-bar-fill" style="width: @percentage%; background: @color;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="category-stats">
+                                        <span class="category-count">@category.Value</span>
+                                        <span class="category-percent">@percentage.ToString("F1")%</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-chart">
+                            <p>No category data available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row - Line Charts -->
+        <div class="charts-grid">
+            <!-- Writing Frequency Line Chart -->
             <div class="card chart-card">
                 <div class="chart-header">
                     <h3>Writing Frequency</h3>
@@ -237,17 +274,142 @@ else
                 <div class="chart-content">
                     @if (analytics.WeeklyFrequency.Any())
                     {
-                        <div class="frequency-chart">
-                            @foreach (var week in analytics.WeeklyFrequency.TakeLast(12))
-                            {
-                                var maxEntries = analytics.WeeklyFrequency.Values.Max();
-                                var heightPercent = maxEntries > 0 ? (week.Value * 100.0 / maxEntries) : 0;
-                                <div class="frequency-bar-group">
-                                    <div class="frequency-bar" style="height: @Math.Max(heightPercent, 5)%;"></div>
-                                    <div class="frequency-label">@week.Key</div>
-                                    <div class="frequency-count">@week.Value</div>
-                                </div>
-                            }
+                        <div class="line-chart-container">
+                            <svg viewBox="0 0 400 200" class="line-chart">
+                                @{
+                                    var freqData = analytics.WeeklyFrequency.TakeLast(12).ToList();
+                                    var maxFreq = freqData.Max(f => f.Value);
+                                    var freqPoints = new List<string>();
+                                    var chartWidth = 400;
+                                    var chartHeight = 200;
+                                    var padding = 20;
+                                    var usableWidth = chartWidth - (padding * 2);
+                                    var usableHeight = chartHeight - (padding * 2);
+
+                                    for (int i = 0; i < freqData.Count; i++)
+                                    {
+                                        var x = padding + (i * usableWidth / (freqData.Count - 1 > 0 ? freqData.Count - 1 : 1));
+                                        var y = chartHeight - padding - (freqData[i].Value * usableHeight / (maxFreq > 0 ? maxFreq : 1));
+                                        freqPoints.Add($"{x},{y}");
+                                    }
+                                    var freqPath = string.Join(" ", freqPoints);
+                                }
+
+                                <!-- Grid lines -->
+                                @for (int i = 0; i <= 4; i++)
+                                {
+                                    var y = padding + (i * usableHeight / 4);
+                                    <line x1="@padding" y1="@y" x2="@(chartWidth - padding)" y2="@y"
+                                          stroke="var(--border-color)" stroke-width="1" opacity="0.3" />
+                                }
+
+                                <!-- Line path -->
+                                @if (freqPoints.Count > 1)
+                                {
+                                    <polyline points="@freqPath" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+                                    <!-- Area under line -->
+                                    var areaPath = $"M {padding},{chartHeight - padding} " + freqPath + $" L {chartWidth - padding},{chartHeight - padding} Z";
+                                    <path d="@areaPath" fill="var(--primary)" opacity="0.1" />
+
+                                    <!-- Data points -->
+                                    @for (int i = 0; i < freqData.Count; i++)
+                                    {
+                                        var x = padding + (i * usableWidth / (freqData.Count - 1 > 0 ? freqData.Count - 1 : 1));
+                                        var y = chartHeight - padding - (freqData[i].Value * usableHeight / (maxFreq > 0 ? maxFreq : 1));
+                                        <circle cx="@x" cy="@y" r="4" fill="var(--primary)" stroke="white" stroke-width="2" />
+                                    }
+                                }
+                            </svg>
+                            <div class="line-chart-labels">
+                                @foreach (var point in freqData)
+                                {
+                                    <div class="line-chart-label">
+                                        <span class="label-text">@point.Key</span>
+                                        <span class="label-value">@point.Value</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-chart">
+                            <p>No data available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Word Count Trend Line Chart -->
+            <div class="card chart-card">
+                <div class="chart-header">
+                    <h3>Word Count Trend</h3>
+                    <span class="chart-subtitle">Average words per entry over time</span>
+                </div>
+                <div class="chart-content">
+                    @if (analytics.WordCountTrend.Any())
+                    {
+                        <div class="line-chart-container">
+                            <svg viewBox="0 0 400 200" class="line-chart">
+                                @{
+                                    var wordData = analytics.WordCountTrend.TakeLast(12).ToList();
+                                    var maxWords = wordData.Max(w => w.Value);
+                                    var minWords = wordData.Min(w => w.Value);
+                                    var wordRange = maxWords - minWords;
+                                    var wordPoints = new List<string>();
+                                    var chartWidth = 400;
+                                    var chartHeight = 200;
+                                    var padding = 20;
+                                    var usableWidth = chartWidth - (padding * 2);
+                                    var usableHeight = chartHeight - (padding * 2);
+
+                                    for (int i = 0; i < wordData.Count; i++)
+                                    {
+                                        var x = padding + (i * usableWidth / (wordData.Count - 1 > 0 ? wordData.Count - 1 : 1));
+                                        var normalizedValue = wordRange > 0 ? (wordData[i].Value - minWords) : 0;
+                                        var y = chartHeight - padding - (normalizedValue * usableHeight / (wordRange > 0 ? wordRange : 1));
+                                        wordPoints.Add($"{x},{y}");
+                                    }
+                                    var wordPath = string.Join(" ", wordPoints);
+                                }
+
+                                <!-- Grid lines -->
+                                @for (int i = 0; i <= 4; i++)
+                                {
+                                    var y = padding + (i * usableHeight / 4);
+                                    <line x1="@padding" y1="@y" x2="@(chartWidth - padding)" y2="@y"
+                                          stroke="var(--border-color)" stroke-width="1" opacity="0.3" />
+                                }
+
+                                <!-- Line path -->
+                                @if (wordPoints.Count > 1)
+                                {
+                                    <polyline points="@wordPath" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+                                    <!-- Area under line -->
+                                    var areaPath = $"M {padding},{chartHeight - padding} " + wordPath + $" L {chartWidth - padding},{chartHeight - padding} Z";
+                                    <path d="@areaPath" fill="#6366f1" opacity="0.1" />
+
+                                    <!-- Data points -->
+                                    @for (int i = 0; i < wordData.Count; i++)
+                                    {
+                                        var x = padding + (i * usableWidth / (wordData.Count - 1 > 0 ? wordData.Count - 1 : 1));
+                                        var normalizedValue = wordRange > 0 ? (wordData[i].Value - minWords) : 0;
+                                        var y = chartHeight - padding - (normalizedValue * usableHeight / (wordRange > 0 ? wordRange : 1));
+                                        <circle cx="@x" cy="@y" r="4" fill="#6366f1" stroke="white" stroke-width="2" />
+                                    }
+                                }
+                            </svg>
+                            <div class="line-chart-labels">
+                                @foreach (var point in wordData)
+                                {
+                                    <div class="line-chart-label">
+                                        <span class="label-text">@point.Key</span>
+                                        <span class="label-value">@point.Value</span>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     }
                     else
@@ -260,7 +422,7 @@ else
             </div>
         </div>
 
-        <!-- Second Row -->
+        <!-- Third Row -->
         <div class="charts-grid">
             <!-- Top Tags -->
             <div class="card chart-card">
@@ -297,46 +459,6 @@ else
                 </div>
             </div>
 
-            <!-- Word Count Trend -->
-            <div class="card chart-card">
-                <div class="chart-header">
-                    <h3>Word Count Trend</h3>
-                    <span class="chart-subtitle">Average words per entry over time</span>
-                </div>
-                <div class="chart-content">
-                    @if (analytics.WordCountTrend.Any())
-                    {
-                        <div class="word-trend-chart">
-                            @{
-                                var maxWords = analytics.WordCountTrend.Values.Max();
-                                var minWords = analytics.WordCountTrend.Values.Min();
-                                var range = maxWords - minWords;
-                            }
-                            <div class="word-trend-bars">
-                                @foreach (var point in analytics.WordCountTrend.TakeLast(12))
-                                {
-                                    var heightPercent = range > 0 ? ((point.Value - minWords) * 80.0 / range) + 20 : 50;
-                                    <div class="word-trend-bar-group">
-                                        <div class="word-trend-bar" style="height: @heightPercent%;"></div>
-                                        <div class="word-trend-label">@point.Key</div>
-                                        <div class="word-trend-value">@point.Value</div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="empty-chart">
-                            <p>No data available</p>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <!-- Third Row - Additional Stats -->
-        <div class="charts-grid">
             <!-- Writing Time Distribution -->
             <div class="card chart-card">
                 <div class="chart-header">
@@ -360,8 +482,10 @@ else
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Longest Streak & Stats -->
+        <!-- Fourth Row - Achievement Stats -->
+        <div class="charts-grid">
             <div class="card chart-card">
                 <div class="chart-header">
                     <h3>Achievement Stats</h3>
@@ -421,6 +545,45 @@ else
                     </div>
                 </div>
             </div>
+
+            <!-- Placeholder for future chart -->
+            <div class="card chart-card">
+                <div class="chart-header">
+                    <h3>Categories Overview</h3>
+                    <span class="chart-subtitle">@analytics.UniqueCategories @(analytics.UniqueCategories == 1 ? "category" : "categories") used</span>
+                </div>
+                <div class="chart-content">
+                    @if (analytics.CategoryCounts.Any())
+                    {
+                        <div class="category-overview-stats">
+                            <div class="category-stat-item">
+                                <div class="category-stat-label">Most Used Category</div>
+                                <div class="category-stat-value">
+                                    @(analytics.CategoryCounts.OrderByDescending(c => c.Value).First().Key ?? "Uncategorized")
+                                </div>
+                                <div class="category-stat-count">
+                                    @analytics.CategoryCounts.OrderByDescending(c => c.Value).First().Value entries
+                                </div>
+                            </div>
+                            <div class="category-stat-item">
+                                <div class="category-stat-label">Uncategorized Entries</div>
+                                <div class="category-stat-value">
+                                    @analytics.CategoryCounts.GetValueOrDefault("", 0)
+                                </div>
+                                <div class="category-stat-count">
+                                    @((analytics.TotalEntries > 0 ? analytics.CategoryCounts.GetValueOrDefault("", 0) * 100.0 / analytics.TotalEntries : 0).ToString("F1"))% of total
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-chart">
+                            <p>No category data available</p>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
 
         <!-- Insights Section -->
@@ -429,21 +592,33 @@ else
             <div class="insights-grid">
                 @if (analytics.CurrentStreak > 0)
                 {
-                    @if (!string.IsNullOrEmpty(analytics.MostActiveTimeSlot) && analytics.TotalEntries > 0)
-                    {
-                        <div class="insight-card">
-                            <div class="insight-icon neutral">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                            </div>
-                            <div class="insight-content">
-                                <h4>Most Active Time</h4>
-                                <p>You journal most frequently during the @analytics.MostActiveTimeSlot. This is your prime writing time!</p>
-                            </div>
+                    <div class="insight-card">
+                        <div class="insight-icon positive">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
                         </div>
-                    }
+                        <div class="insight-content">
+                            <h4>@analytics.CurrentStreak Day Streak!</h4>
+                            <p>You're on a @analytics.CurrentStreak-day writing streak! Keep it up to maintain your momentum.</p>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(analytics.MostActiveTimeSlot) && analytics.TotalEntries > 0)
+                {
+                    <div class="insight-card">
+                        <div class="insight-icon neutral">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="insight-content">
+                            <h4>Most Active Time</h4>
+                            <p>You journal most frequently during the @analytics.MostActiveTimeSlot. This is your prime writing time!</p>
+                        </div>
+                    </div>
                 }
 
                 @if (!string.IsNullOrEmpty(analytics.MostCommonMood))
@@ -460,22 +635,6 @@ else
                         <div class="insight-content">
                             <h4>Dominant Mood: @CapitalizeFirst(analytics.MostCommonMood)</h4>
                             <p>@GetMoodInsightText(analytics.MostCommonMood, analytics.MoodCounts.GetValueOrDefault(analytics.MostCommonMood, 0), analytics.TotalEntries)</p>
-                        </div>
-                    </div>
-                }
-
-                @if (!string.IsNullOrEmpty(analytics.MostActiveTimeSlot))
-                {
-                    <div class="insight-card">
-                        <div class="insight-icon neutral">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                        </div>
-                        <div class="insight-content">
-                            <h4>Most Active Time</h4>
-                            <p>You journal most frequently during the @analytics.MostActiveTimeSlot. This is your prime writing time!</p>
                         </div>
                     </div>
                 }
@@ -527,393 +686,24 @@ else
                         </div>
                     </div>
                 }
+
+                @if (analytics.CategoryCounts.Any() && analytics.CategoryCounts.Count > 1)
+                {
+                    var topCategory = analytics.CategoryCounts.OrderByDescending(c => c.Value).First();
+                    var topCategoryName = string.IsNullOrEmpty(topCategory.Key) ? "Uncategorized" : topCategory.Key;
+                    <div class="insight-card">
+                        <div class="insight-icon neutral">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="insight-content">
+                            <h4>Favorite Category: @topCategoryName</h4>
+                            <p>Most of your entries (@topCategory.Value) belong to "@topCategoryName". This appears to be a key theme in your life.</p>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
-}
-
-@code {
-    private bool isAuthorized = false;
-    private bool isLoading = true;
-    private string? currentUserId;
-    private int selectedPeriod = 90; // Default: Last 3 months
-
-    private AnalyticsData analytics = new();
-    private List<JournalEntryDisplayModel> allEntries = new();
-
-    // Mood categories
-    private readonly List<string> positiveMoods = new() { "happy", "excited", "relaxed", "grateful", "confident" };
-    private readonly List<string> neutralMoods = new() { "calm", "thoughtful", "curious", "nostalgic", "bored" };
-    private readonly List<string> negativeMoods = new() { "sad", "angry", "anxious", "stressed", "tired" };
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user.Identity?.IsAuthenticated != true)
-        {
-            Navigation.NavigateTo("/login");
-            return;
-        }
-
-        isAuthorized = true;
-        currentUserId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-        if (string.IsNullOrEmpty(currentUserId))
-        {
-            currentUserId = CustomAuthStateProvider.GetCurrentUserId();
-        }
-
-        await LoadAnalytics();
-        isLoading = false;
-    }
-
-    private async Task OnPeriodChanged()
-    {
-        isLoading = true;
-        StateHasChanged();
-        await LoadAnalytics();
-        isLoading = false;
-        StateHasChanged();
-    }
-
-    private async Task LoadAnalytics()
-    {
-        if (string.IsNullOrEmpty(currentUserId)) return;
-
-        // Get all entries for the user
-        var result = await JournalService.GetAllEntriesAsync(currentUserId);
-        if (!result.Success || result.Data == null)
-        {
-            allEntries = new List<JournalEntryDisplayModel>();
-        }
-        else
-        {
-            allEntries = result.Data;
-        }
-
-        // Filter by selected period
-        var filteredEntries = FilterEntriesByPeriod(allEntries);
-
-        // Calculate all analytics
-        analytics = CalculateAnalytics(filteredEntries, allEntries);
-    }
-
-    private List<JournalEntryDisplayModel> FilterEntriesByPeriod(List<JournalEntryDisplayModel> entries)
-    {
-        if (selectedPeriod == 0) return entries; // All time
-
-        var cutoffDate = DateTime.UtcNow.AddDays(-selectedPeriod);
-        return entries.Where(e => e.CreatedDate >= cutoffDate).ToList();
-    }
-
-    private AnalyticsData CalculateAnalytics(List<JournalEntryDisplayModel> filteredEntries, List<JournalEntryDisplayModel> allEntries)
-    {
-        var analytics = new AnalyticsData();
-
-        // Basic stats
-        analytics.TotalEntries = filteredEntries.Count;
-        analytics.TotalWords = filteredEntries.Sum(e => e.WordCount);
-        analytics.AverageWordsPerEntry = filteredEntries.Any() ? filteredEntries.Average(e => e.WordCount) : 0;
-
-        // Calculate streaks using all entries
-        CalculateStreaks(allEntries, analytics);
-
-        // Completion rate (entries / days in period)
-        var daysInPeriod = selectedPeriod == 0
-            ? (allEntries.Any() ? (DateTime.UtcNow - allEntries.Min(e => e.CreatedDate)).Days + 1 : 1)
-            : selectedPeriod;
-        analytics.CompletionRate = daysInPeriod > 0 ? Math.Min((int)(filteredEntries.Count * 100.0 / daysInPeriod), 100) : 0;
-
-        // Days journaling
-        analytics.DaysJournaling = filteredEntries.Select(e => e.CreatedDate.Date).Distinct().Count();
-
-        // Mood distribution
-        analytics.MoodCounts = new Dictionary<string, int>();
-        foreach (var entry in filteredEntries)
-        {
-            foreach (var mood in entry.AllMoods)
-            {
-                if (!analytics.MoodCounts.ContainsKey(mood))
-                    analytics.MoodCounts[mood] = 0;
-                analytics.MoodCounts[mood]++;
-            }
-        }
-
-        // Most common mood
-        analytics.MostCommonMood = analytics.MoodCounts.Any()
-            ? analytics.MoodCounts.OrderByDescending(m => m.Value).First().Key
-            : "";
-
-        // Mood category percentages
-        var totalMoodEntries = filteredEntries.Count;
-        if (totalMoodEntries > 0)
-        {
-            var positiveCount = filteredEntries.Count(e => positiveMoods.Contains(e.PrimaryMood));
-            var neutralCount = filteredEntries.Count(e => neutralMoods.Contains(e.PrimaryMood));
-            var negativeCount = filteredEntries.Count(e => negativeMoods.Contains(e.PrimaryMood));
-
-            analytics.PositiveMoodPercentage = (int)(positiveCount * 100.0 / totalMoodEntries);
-            analytics.NeutralMoodPercentage = (int)(neutralCount * 100.0 / totalMoodEntries);
-            analytics.NegativeMoodPercentage = (int)(negativeCount * 100.0 / totalMoodEntries);
-        }
-
-        // Weekly frequency
-        analytics.WeeklyFrequency = new Dictionary<string, int>();
-        var weeks = filteredEntries
-            .GroupBy(e => GetWeekLabel(e.CreatedDate))
-            .OrderBy(g => g.Min(e => e.CreatedDate));
-        foreach (var week in weeks)
-        {
-            analytics.WeeklyFrequency[week.Key] = week.Count();
-        }
-
-        // Top tags
-        var tagCounts = new Dictionary<string, int>();
-        foreach (var entry in filteredEntries)
-        {
-            foreach (var tag in entry.TagNames)
-            {
-                if (!tagCounts.ContainsKey(tag))
-                    tagCounts[tag] = 0;
-                tagCounts[tag]++;
-            }
-        }
-        analytics.TopTags = tagCounts
-            .OrderByDescending(t => t.Value)
-            .Select(t => new TagUsageDisplayModel { TagName = t.Key, UsageCount = t.Value })
-            .ToList();
-        analytics.UniqueTags = tagCounts.Count;
-
-        // Word count trend (by week)
-        analytics.WordCountTrend = new Dictionary<string, int>();
-        var wordsByWeek = filteredEntries
-            .GroupBy(e => GetWeekLabel(e.CreatedDate))
-            .OrderBy(g => g.Min(e => e.CreatedDate));
-        foreach (var week in wordsByWeek)
-        {
-            analytics.WordCountTrend[week.Key] = (int)week.Average(e => e.WordCount);
-        }
-
-        // Word count growth
-        if (analytics.WordCountTrend.Count >= 2)
-        {
-            var firstAvg = analytics.WordCountTrend.First().Value;
-            var lastAvg = analytics.WordCountTrend.Last().Value;
-            analytics.WordCountGrowth = lastAvg - firstAvg;
-        }
-
-        // Time distribution
-        analytics.TimeDistribution = new Dictionary<string, int>
-        {
-            { "Morning", 0 },
-            { "Afternoon", 0 },
-            { "Evening", 0 },
-            { "Night", 0 }
-        };
-        foreach (var entry in filteredEntries)
-        {
-            var hour = entry.CreatedDate.ToLocalTime().Hour;
-            var timeSlot = hour switch
-            {
-                >= 5 and < 12 => "Morning",
-                >= 12 and < 17 => "Afternoon",
-                >= 17 and < 21 => "Evening",
-                _ => "Night"
-            };
-            analytics.TimeDistribution[timeSlot]++;
-        }
-        analytics.MostActiveTimeSlot = analytics.TimeDistribution.Any()
-            ? analytics.TimeDistribution.OrderByDescending(t => t.Value).First().Key
-            : "";
-
-        return analytics;
-    }
-
-    private void CalculateStreaks(List<JournalEntryDisplayModel> entries, AnalyticsData analytics)
-    {
-        if (!entries.Any())
-        {
-            analytics.CurrentStreak = 0;
-            analytics.LongestStreak = 0;
-            return;
-        }
-
-        var entryDates = entries
-            .Select(e => e.CreatedDate.ToLocalTime().Date)
-            .Distinct()
-            .OrderByDescending(d => d)
-            .ToList();
-
-        var today = DateTime.Now.Date;
-        var yesterday = today.AddDays(-1);
-
-        // Current streak
-        int currentStreak = 0;
-        var checkDate = entryDates.Contains(today) ? today : yesterday;
-
-        if (entryDates.Contains(today) || entryDates.Contains(yesterday))
-        {
-            while (entryDates.Contains(checkDate))
-            {
-                currentStreak++;
-                checkDate = checkDate.AddDays(-1);
-            }
-        }
-        analytics.CurrentStreak = currentStreak;
-
-        // Longest streak
-        int longestStreak = 0;
-        int tempStreak = 1;
-        var sortedDates = entryDates.OrderBy(d => d).ToList();
-
-        for (int i = 1; i < sortedDates.Count; i++)
-        {
-            if ((sortedDates[i] - sortedDates[i - 1]).Days == 1)
-            {
-                tempStreak++;
-            }
-            else
-            {
-                longestStreak = Math.Max(longestStreak, tempStreak);
-                tempStreak = 1;
-            }
-        }
-        analytics.LongestStreak = Math.Max(longestStreak, tempStreak);
-    }
-
-    private string GetWeekLabel(DateTime date)
-    {
-        var weekStart = date.Date.AddDays(-(int)date.DayOfWeek);
-        return weekStart.ToString("MMM d");
-    }
-
-    private string GetPeriodLabel()
-    {
-        return selectedPeriod switch
-        {
-            7 => "Last 7 days",
-            30 => "Last 30 days",
-            90 => "Last 90 days",
-            365 => "This year",
-            _ => "All time"
-        };
-    }
-
-    private string CapitalizeFirst(string text)
-    {
-        if (string.IsNullOrEmpty(text)) return text;
-        return char.ToUpper(text[0]) + text.Substring(1);
-    }
-
-    private string GetMoodInsightClass(string mood)
-    {
-        if (positiveMoods.Contains(mood)) return "positive";
-        if (negativeMoods.Contains(mood)) return "negative";
-        return "neutral";
-    }
-
-    private string GetMoodInsightText(string mood, int count, int total)
-    {
-        var percentage = total > 0 ? (int)(count * 100.0 / total) : 0;
-
-        if (positiveMoods.Contains(mood))
-            return $"{CapitalizeFirst(mood)} appears in {percentage}% of your entries. Keep up the positive energy!";
-        if (negativeMoods.Contains(mood))
-            return $"{CapitalizeFirst(mood)} appears in {percentage}% of your entries. Consider what might help improve your mood.";
-        return $"{CapitalizeFirst(mood)} appears in {percentage}% of your entries.";
-    }
-
-    private async Task ExportReport()
-    {
-        try
-        {
-            var reportData = new AnalyticsReportData
-            {
-                PeriodLabel = GetPeriodLabel(),
-                TotalEntries = analytics.TotalEntries,
-                TotalWords = analytics.TotalWords,
-                AverageWordsPerEntry = analytics.AverageWordsPerEntry,
-                CurrentStreak = analytics.CurrentStreak,
-                LongestStreak = analytics.LongestStreak,
-                DaysJournaling = analytics.DaysJournaling,
-                UniqueTags = analytics.UniqueTags,
-                MoodCounts = analytics.MoodCounts,
-                TopTags = analytics.TopTags
-            };
-
-            var filePath = await PdfExportService.ExportAnalyticsReportAsync(reportData);
-
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                await Application.Current!.MainPage!.DisplayAlert(
-                    "Export Successful",
-                    $"Your analytics report has been saved as PDF to:\n{filePath}",
-                    "OK"
-                );
-            }
-            else
-            {
-                await Application.Current!.MainPage!.DisplayAlert(
-                    "Export Cancelled",
-                    "The export was cancelled.",
-                    "OK"
-                );
-            }
-        }
-        catch (Exception ex)
-        {
-            await Application.Current!.MainPage!.DisplayAlert("Error", "Failed to export report: " + ex.Message, "OK");
-        }
-    }
-
-    private string GenerateReportText()
-    {
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine("=== Journal Analytics Report ===");
-        sb.AppendLine($"Generated: {DateTime.Now:MMMM dd, yyyy}");
-        sb.AppendLine($"Period: {GetPeriodLabel()}");
-        sb.AppendLine();
-        sb.AppendLine("--- Overview ---");
-        sb.AppendLine($"Total Entries: {analytics.TotalEntries}");
-        sb.AppendLine($"Current Streak: {analytics.CurrentStreak} days");
-        sb.AppendLine($"Longest Streak: {analytics.LongestStreak} days");
-        sb.AppendLine($"Average Words/Entry: {analytics.AverageWordsPerEntry:F0}");
-        sb.AppendLine($"Total Words Written: {analytics.TotalWords:N0}");
-        sb.AppendLine();
-        sb.AppendLine("--- Mood Distribution ---");
-        foreach (var mood in analytics.MoodCounts.OrderByDescending(m => m.Value))
-        {
-            sb.AppendLine($"{CapitalizeFirst(mood.Key)}: {mood.Value}");
-        }
-        return sb.ToString();
-    }
-
-    // Analytics data class
-    private class AnalyticsData
-    {
-        public int TotalEntries { get; set; }
-        public int TotalWords { get; set; }
-        public double AverageWordsPerEntry { get; set; }
-        public int CurrentStreak { get; set; }
-        public int LongestStreak { get; set; }
-        public int CompletionRate { get; set; }
-        public int DaysJournaling { get; set; }
-        public int UniqueTags { get; set; }
-        public int WordCountGrowth { get; set; }
-
-        public int PositiveMoodPercentage { get; set; }
-        public int NeutralMoodPercentage { get; set; }
-        public int NegativeMoodPercentage { get; set; }
-
-        public string MostCommonMood { get; set; } = "";
-        public string MostActiveTimeSlot { get; set; } = "";
-
-        public Dictionary<string, int> MoodCounts { get; set; } = new();
-        public Dictionary<string, int> WeeklyFrequency { get; set; } = new();
-        public Dictionary<string, int> WordCountTrend { get; set; } = new();
-        public Dictionary<string, int> TimeDistribution { get; set; } = new();
-        public List<TagUsageDisplayModel> TopTags { get; set; } = new();
-    }
 }

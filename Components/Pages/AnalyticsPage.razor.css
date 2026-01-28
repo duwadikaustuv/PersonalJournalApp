@@ -395,49 +395,123 @@
     color: var(--text-primary);
 }
 
-/* Frequency Chart */
-.frequency-chart {
+/* Category Chart */
+.category-chart {
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    height: 220px;
-    gap: 6px;
-    padding-bottom: 8px;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 240px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.frequency-bar-group {
+    .category-chart::-webkit-scrollbar {
+        display: none;
+    }
+
+.category-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.category-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.category-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.category-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.category-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.category-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.category-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.category-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.category-count {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.category-percent {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Line Charts */
+.line-chart-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.line-chart {
+    width: 100%;
+    height: auto;
+}
+
+.line-chart-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.line-chart-label {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 2px;
     flex: 1;
-    gap: 6px;
+    min-width: 50px;
 }
 
-.frequency-bar {
-    width: 100%;
-    max-width: 30px;
-    background: var(--primary);
-    border-radius: 4px 4px 0 0;
-    transition: all 0.3s;
-    min-height: 4px;
-}
-
-.frequency-bar-group:hover .frequency-bar {
-    opacity: 0.8;
-}
-
-.frequency-label {
+.label-text {
     font-size: 0.625rem;
     color: var(--text-tertiary);
     font-weight: 500;
     text-align: center;
-    white-space: nowrap;
 }
 
-.frequency-count {
+.label-value {
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 /* Tags List */
@@ -486,55 +560,6 @@
     color: var(--text-secondary);
     min-width: 30px;
     text-align: right;
-}
-
-/* Word Trend Chart */
-.word-trend-chart {
-    height: 220px;
-}
-
-.word-trend-bars {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    height: 200px;
-    gap: 6px;
-    padding-bottom: 8px;
-}
-
-.word-trend-bar-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    gap: 6px;
-}
-
-.word-trend-bar {
-    width: 100%;
-    max-width: 30px;
-    background: var(--primary);
-    border-radius: 4px 4px 0 0;
-    transition: all 0.3s;
-    min-height: 4px;
-}
-
-.word-trend-bar-group:hover .word-trend-bar {
-    opacity: 0.8;
-}
-
-.word-trend-label {
-    font-size: 0.625rem;
-    color: var(--text-tertiary);
-    font-weight: 500;
-    text-align: center;
-    white-space: nowrap;
-}
-
-.word-trend-value {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--primary);
 }
 
 /* Time Distribution */
@@ -643,6 +668,45 @@
     font-weight: 500;
 }
 
+/* Category Overview Stats */
+.category-overview-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 20px 0;
+}
+
+.category-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px;
+    background: var(--hover-bg);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.category-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.category-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.category-stat-count {
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+}
+
 /* Insights Section */
 .insights-section {
     margin-top: 8px;
@@ -744,6 +808,10 @@
     .achievement-stats {
         grid-template-columns: 1fr;
     }
+
+    .category-overview-stats {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
@@ -759,8 +827,7 @@
         padding: 20px;
     }
 
-    .mood-chart,
-    .frequency-chart {
+    .mood-chart {
         gap: 4px;
     }
 
@@ -775,6 +842,14 @@
     .time-distribution {
         grid-template-columns: repeat(2, 1fr);
         height: auto;
+    }
+
+    .line-chart-labels {
+        padding: 0 10px;
+    }
+
+    .category-chart {
+        max-height: 300px;
     }
 }
 
